@@ -40,6 +40,7 @@ FINANCE_INPUT = {
     },
 }
 
+
 def _build_eval_case(
     domain: str,
     skill_name: str,
@@ -100,8 +101,7 @@ def build_finance_eval_case() -> EngagementEvalCase:
             output={
                 "suggestion": {
                     "recommendation": (
-                        "Maintain sufficient liquidity before increasing long-term "
-                        "allocation."
+                        "Maintain sufficient liquidity before increasing long-term allocation."
                     ),
                     "rationale": (
                         "The member has moderate risk tolerance and long-term savings "
@@ -120,8 +120,7 @@ def build_finance_eval_case() -> EngagementEvalCase:
                     "dimension": "goals",
                     "content": {
                         "targets": (
-                            "Maintain sufficient liquidity before increasing long-term "
-                            "allocation."
+                            "Maintain sufficient liquidity before increasing long-term allocation."
                         ),
                         "priorities": (
                             "The member has moderate risk tolerance and long-term savings "
