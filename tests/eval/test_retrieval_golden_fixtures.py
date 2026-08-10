@@ -33,7 +33,10 @@ FIXTURE_PATH = Path(__file__).parent / "fixtures" / "retrieval_golden.json"
 DOMAINS = ["education", "coop-finance"]
 
 # InteractionAgent.turn's contract top_k — the golden orderings were produced
-# at this depth and the honesty test below re-runs them at the same depth.
+# at this depth and the honesty test below re-runs them at the same depth. The
+# WDF-node ``top_k`` fields (e.g. ``top_k: 4`` in the coop-finance retrieve
+# nodes) are currently inert — no executor reads them; ``InteractionAgent.turn``
+# hardcodes 5 — so the fixture tracks the executing path, not the declared WDF depth.
 CONTRACT_TOP_K = 5
 
 # Proposed scoring depth for precision_at_k (freeze with LD-W6): every case's
