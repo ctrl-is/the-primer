@@ -32,6 +32,9 @@ dependencies = [
     "pydantic-ai>=2,<3",
 ]
 
+[project.scripts]
+primer-eval = "primer_core.eval.harness:main"
+
 [project.optional-dependencies]
 # Extra for the LangGraph adaptive-tutoring prototype (examples/adaptive_tutoring_prototype).
 # Install with: uv sync --extra adaptive-tutoring
