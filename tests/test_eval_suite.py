@@ -16,7 +16,7 @@ from tests.eval.test_retrieval_golden_fixtures import PROPOSED_K
 
 
 @pytest.mark.eval
-async def test_all_five_transition_metrics_pass_and_aggregate_into_report(tmp_path: Path) -> None:
+async def test_all_five_transition_metrics_pass_and_aggregate_into_report() -> None:
     """
     BDD Scenario #2
     ---------------
@@ -53,7 +53,7 @@ async def test_all_five_transition_metrics_pass_and_aggregate_into_report(tmp_pa
 
 
 @pytest.mark.eval
-async def test_retrieval_quality_is_scored_from_golden_fixtures(tmp_path: Path) -> None:
+async def test_retrieval_quality_is_scored_from_golden_fixtures() -> None:
     """
     BDD Scenario #3
     ---------------
@@ -94,7 +94,7 @@ async def test_suite_is_runnable_as_first_class_entrypoint() -> None:
         try:
             # When `uv run pytest -m eval -q` and `uv run primer-eval` execute
             result = subprocess.run(
-                pytest_command, capture_output=True, text=True, check=True, cwd=repo_root
+                command, capture_output=True, text=True, check=True, cwd=repo_root
             )
             output += result.stdout
             results.append(result)
