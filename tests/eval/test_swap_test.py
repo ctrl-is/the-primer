@@ -30,5 +30,5 @@ async def test_identical_engine_module_set_across_domains() -> None:
 
     assert len(results) > 0 and all(result.passed for result in results)
     # Indicates non-empty engine-module set that excludes primer_core.eval
-
+    assert len(results[0].engine_modules_touched) > 0
     assert results[0].engine_modules_touched == results[1].engine_modules_touched

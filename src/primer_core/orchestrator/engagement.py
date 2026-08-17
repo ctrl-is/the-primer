@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 from capillary_actions_sdk.events import AGUIEvent
-from capillary_actions_sdk.ports.memory import MemoryStorePort
 from capillary_actions_sdk.ports.platform import (
     EventStreamPort,
     RunWorkflowPort,
@@ -15,7 +14,6 @@ from capillary_actions_sdk.ports.platform import (
     RunWorkflowResponse,
 )
 
-from primer_core.domains.domain_pack import DomainPack
 from primer_core.memory.core import MemoryCore
 from primer_core.orchestrator.hooks import (
     HookContext,
@@ -154,18 +152,3 @@ class EngagementOrchestrator:
                 HookEvent.AFTER_ENGAGEMENT,
                 context,
             )
-
-    def from_pack(
-        pack: DomainPack,
-        *,
-        runner: RunWorkflowPort,
-        store: MemoryStorePort,
-        hooks: HookRegistry | None = None,
-    ) -> EngagementOrchestrator:
-
-        new_memory = MemoryCore(schema=pack.schema, store=store)
-        new_orchestrator = EngagementOrchestrator(
-            schema=pack.schema, runner=runner, memory=new_memory, skills=pack.skills, hooks=hooks
-        )
-
-        return new_orchestrator

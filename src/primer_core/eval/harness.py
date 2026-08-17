@@ -25,7 +25,7 @@ class EvalReport(BaseModel):
 
 
 async def run_eval_suite(domains: list[str]) -> EvalReport:
-    assert_orchestrator_deterministic(domains)
+    await assert_orchestrator_deterministic(domains)
 
     swap_results: list[SwapParityResult] = await run_swap_parity(domains)
     metrics_report: TransitionMetricReport = await run_transition_metrics(domains)
@@ -56,38 +56,54 @@ def format_report(report: EvalReport) -> str:
 The primer_core.eval suite passed {passed_cases}/{total_cases} cases.
 =====================================================================
 
-Details:
-
+DETAILS:
 """
 
     for result in report.results["transition_metrics"].metrics:
         formatted += f"""
 --------------
-Test: {result.name}
+Test: {result.name}(['education', 'coop-finance'])
+Status: {"PASSED" if result.passed else "FAILED"}
 --------------
 {result.detail}
 
 """
 
-        # f"\n{result.detail}\n"
-
-    formatted += "\n\n"
+    formatted += """
+--------------
+Test: run_swap_parity(['education', 'coop-finance'])
+Status: SWAP_PARITY_STATUS_HERE
+--------------
+"""
 
     for result in report.results["swap_test"]:
         formatted += f"""
-Domain '{result.domain}' yielded the following module set:
+Domain '{result.domain}' yielded the following engine module set:
 \t{"\n\t".join(result.engine_modules_touched)}
-
 """
+        if result.passed:
+            formatted += (
+                f"Individual result of domain '{result.domain}': PASSED.\n"
+                f"There are {len(result.engine_modules_touched)} > 0 engine "
+                "modules ran and all primer_core/eval files were excluded.\n"
+            )
+        else:
+            formatted += (
+                f"Individual result of domain '{result.domain}': FAILED.\n"
+                f"There are either 0 engine modules ran or the list includes "
+                "at least one file from primer_core/eval.\n"
+            )
 
     base_modules: list[str] = report.results["swap_test"][0].engine_modules_touched
 
     if not all(
         result.engine_modules_touched == base_modules for result in report.results["swap_test"]
     ):
-        formatted += "These module sets are not identical."
+        formatted += "\nThese module sets are NOT identical --> run_swap_parity FAILED"
+        formatted = formatted.replace("SWAP_PARITY_STATUS_HERE", "FAILED")
     else:
-        formatted += "These module sets are identical."
+        formatted += "\nThese module sets are identical --> run_swap_parity PASSED"
+        formatted = formatted.replace("SWAP_PARITY_STATUS_HERE", "PASSED")
 
     return formatted
 

@@ -1,29 +1,13 @@
 from __future__ import annotations
 
 import builtins
+from copy import deepcopy
 from typing import Any, NamedTuple
 
 from pydantic import BaseModel
 
-# from tests.eval.cases import (
-#   EngagementEvalCase,
-#   build_education_eval_case,
-#   build_finance_eval_case
-# )
-from primer_core.eval.cases import (
-    EngagementEvalCase,
-    build_education_eval_case,
-    build_finance_eval_case,
-)
-
-
-def _find_eval_case(domain: str) -> EngagementEvalCase:
-    eval_case = {
-        "education": build_education_eval_case(),
-        "coop-finance": build_finance_eval_case(),
-    }
-    assert domain in eval_case.keys(), f"Domain {domain} was not found."
-    return eval_case.get(domain)
+from primer_core.eval.cases import EngagementEvalCase
+from primer_core.eval.metrics import find_eval_case
 
 
 async def assert_orchestrator_deterministic(domains: list[str]) -> None:
@@ -43,6 +27,7 @@ async def assert_orchestrator_deterministic(domains: list[str]) -> None:
         (i.e, using `==`) despite the objects' attributes potentially differing only
         by the spaces in memory they occupy.
         """
+        variables_copy = deepcopy(variables)
 
         def valid_class(obj: Any):
             return obj.__class__.__name__ in dir(builtins) + ["NoneType", "UUID"]
@@ -56,10 +41,10 @@ async def assert_orchestrator_deterministic(domains: list[str]) -> None:
             else:
                 return vars(obj)
 
-        for name, value in variables.items():
+        for name, value in variables_copy.items():
             if not valid_class(value):
                 value_dict = custom_class_to_dict(value)
-                variables[name] = attributes(value_dict)
+                variables_copy[name] = attributes(value_dict)
                 # ^ Converts custom class object into a dict of its attributes
                 #   (able to be semantically compared)
             elif isinstance(value, list):
@@ -70,12 +55,12 @@ async def assert_orchestrator_deterministic(domains: list[str]) -> None:
                         new_value_list.append(attributes(obj_dict))
                     else:
                         new_value_list.append(obj)
-                variables[name] = new_value_list
+                variables_copy[name] = new_value_list
 
-        return variables
+        return variables_copy
 
     for domain in domains:
-        cases: list[EngagementEvalCase] = [_find_eval_case(domain) for _ in range(5)]
+        cases: list[EngagementEvalCase] = [find_eval_case(domain) for _ in range(5)]
 
         for case in cases:
             await case.orchestrator.run_engagement(

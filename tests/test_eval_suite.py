@@ -71,6 +71,7 @@ async def test_retrieval_quality_is_scored_from_golden_fixtures() -> None:
     assert result.passed
 
 
+@pytest.mark.eval
 async def test_suite_is_runnable_as_first_class_entrypoint() -> None:
     """
     BDD Scenario #4
@@ -82,8 +83,11 @@ async def test_suite_is_runnable_as_first_class_entrypoint() -> None:
     Then the headline test passes and the script prints the formatted report,
         exiting 0 on pass / non-zero on fail
     """
-    pytest_command = "uv run pytest -m eval -q".split()
-    primer_eval_command = "uv run primer-eval".split()
+    pytest_command = (
+        "uv run pytest -m eval -q --deselect "
+        "tests/test_eval_suite.py::test_suite_is_runnable_as_first_class_entrypoint"
+    )
+    primer_eval_command = "uv run primer-eval"
 
     output = ""
     results = []
@@ -94,7 +98,7 @@ async def test_suite_is_runnable_as_first_class_entrypoint() -> None:
         try:
             # When `uv run pytest -m eval -q` and `uv run primer-eval` execute
             result = subprocess.run(
-                command, capture_output=True, text=True, check=True, cwd=repo_root
+                command.split(), capture_output=True, text=True, check=True, cwd=repo_root
             )
             output += result.stdout
             results.append(result)

@@ -12,12 +12,6 @@ from pydantic import BaseModel
 
 from primer_core.adapters.capillary.file_memory_store import FileMemoryStore
 from primer_core.domains.domain_pack import load_domain_pack
-
-# from tests.eval.cases import (
-#   EngagementEvalCase,
-#   build_education_eval_case,
-#   build_finance_eval_case
-# )
 from primer_core.eval.cases import (
     EngagementEvalCase,
     build_education_eval_case,
@@ -48,15 +42,10 @@ async def run_transition_metrics(domains: list[str]) -> TransitionMetricReport:
     )
     metrics: list[MetricResult] = [(await func(domains)) for func in metric_functions]
 
-    return TransitionMetricReport(
-        metrics=metrics, passed=True if all(metric.passed for metric in metrics) else False
-    )
+    return TransitionMetricReport(metrics=metrics, passed=all(metric.passed for metric in metrics))
 
 
-# placeholder_filter = lambda engagement: engagement != "..."
-
-
-def _find_eval_case(domain: str) -> EngagementEvalCase:
+def find_eval_case(domain: str) -> EngagementEvalCase:
     eval_case = {
         "education": build_education_eval_case(),
         "coop-finance": build_finance_eval_case(),
@@ -68,7 +57,7 @@ def _find_eval_case(domain: str) -> EngagementEvalCase:
 async def declarative_orchestration(domains: list[str]) -> MetricResult:
     bad_engagements: list[tuple[str, str]] = []
     for domain in domains:
-        case: EngagementEvalCase = _find_eval_case(domain)
+        case: EngagementEvalCase = find_eval_case(domain)
 
         if load_domain_pack(domain).workflow_definition(case.skill_name) is None:
             bad_engagements.append((domain, case.skill_name))
@@ -86,7 +75,10 @@ async def declarative_orchestration(domains: list[str]) -> MetricResult:
         return MetricResult(
             name="declarative_orchestration",
             passed=True,
-            detail="Engagements are WDF YAML, not code.",
+            detail=(
+                "Engagements are WDF YAML, not code. "
+                f"WDF YAML files were found for all\nenegagements under domains {domains}."
+            ),
         )
 
 
@@ -96,7 +88,7 @@ async def typed_models(domains: list[str]) -> MetricResult:
     all_dimensions: set[tuple[str, str]] = set()
 
     for domain in domains:
-        case: EngagementEvalCase = _find_eval_case(domain)
+        case: EngagementEvalCase = find_eval_case(domain)
 
         schema: DomainSchema = case.orchestrator.schema
         memory: MemoryCore = case.orchestrator.memory
@@ -129,8 +121,10 @@ async def typed_models(domains: list[str]) -> MetricResult:
 
 
 async def port_conformance(domains: list[str]) -> MetricResult:
+    mismatched_memories: list[tuple[str, tuple[list[MemoryEntry], list[MemoryEntry]]]] = []
+
     for domain in domains:
-        case: EngagementEvalCase = _find_eval_case(domain)
+        case: EngagementEvalCase = find_eval_case(domain)
 
         FILE_PATH = Path(__file__).parent / "eval_memories" / "port_conformance_memory.json"
 
@@ -145,34 +139,41 @@ async def port_conformance(domains: list[str]) -> MetricResult:
             await in_memory_memory.write(subject_id=case.subject_id, entry=entry)
             await file_memory_memory.write(subject_id=case.subject_id, entry=entry)
 
-        in_working_memory = await in_memory_memory.assemble_working_memory(
-            subject_id=case.subject_id
-        )
-        file_working_memory = await file_memory_memory.assemble_working_memory(
-            subject_id=case.subject_id
-        )
+        in_working_memory_entries = (
+            await in_memory_memory.assemble_working_memory(subject_id=case.subject_id)
+        ).entries
+        file_working_memory_entries = (
+            await file_memory_memory.assemble_working_memory(subject_id=case.subject_id)
+        ).entries
 
-        # Clear port_conformance_memory.json for the next run
-        with open(FILE_PATH, "w") as temp_file:
-            json.dump({}, temp_file)
+        if in_working_memory_entries != file_working_memory_entries:
+            mismatched_memories.append(
+                (domain, (in_working_memory_entries, file_working_memory_entries))
+            )
 
-        if in_working_memory.entries == file_working_memory.entries:
-            return MetricResult(
-                name="port_conformance",
-                passed=True,
-                detail="Swap in-memory <-> file MemoryStore, identical working memory",
-            )
-        else:
-            return MetricResult(
-                name="port_conformance",
-                passed=False,
-                detail=(
-                    "Entries stored in working in-memory do not match entries stored in working "
-                    "file memory.\n\n"
-                    f"Working in-memory entries: {in_working_memory.entries}\n\n"
-                    f"Working file memory entries: {file_working_memory.entries}"
-                ),
-            )
+    # Clear port_conformance_memory.json for the next run
+    with open(FILE_PATH, "w") as temp_file:
+        json.dump({}, temp_file)
+
+    if not mismatched_memories:
+        return MetricResult(
+            name="port_conformance",
+            passed=True,
+            detail="Swap in-memory <-> file MemoryStore, identical working memory.",
+        )
+    else:
+        detail = (
+            "Entries stored in working in-memory do not match "
+            "entries stored in working file memory.\n\n"
+        )
+        for domain, entry_list in mismatched_memories:
+            detail += f"""
+Domain: {domain}
+Working in-memory: {entry_list[0]}
+File working memory: {entry_list[1]}
+
+"""
+        return MetricResult(name="port_conformance", passed=False, detail=detail)
 
 
 async def protocol_compliance(domains: list[str]) -> MetricResult:
@@ -180,7 +181,7 @@ async def protocol_compliance(domains: list[str]) -> MetricResult:
     all_events: list[tuple[str, AGUIEvent]] = []
 
     for domain in domains:
-        case: EngagementEvalCase = _find_eval_case(domain)
+        case: EngagementEvalCase = find_eval_case(domain)
 
         iterator: AsyncIterator[AGUIEvent] = case.orchestrator.run_engagement_streaming(
             skill_name=case.skill_name,
@@ -194,10 +195,10 @@ async def protocol_compliance(domains: list[str]) -> MetricResult:
             missing_skill = str(e).split()[-1]
             return MetricResult(
                 name="protocol_compliance",
-                passed="False",
+                passed=False,
                 detail=(
                     f"[CRITICAL ERROR] The following skill was not registered "
-                    "in the {domain} domain, "
+                    f"in the {domain} domain, "
                     f"causing a KeyError: {missing_skill}"
                 ),
             )
@@ -236,7 +237,7 @@ async def stateless_agents(domains: list[str]) -> MetricResult:
     failed_orchestrators: list[tuple[str, EngagementOrchestrator]] = []
 
     for domain in domains:
-        case: EngagementEvalCase = _find_eval_case(domain)
+        case: EngagementEvalCase = find_eval_case(domain)
 
         await case.orchestrator.run_engagement(
             skill_name=case.skill_name,

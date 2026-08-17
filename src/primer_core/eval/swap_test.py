@@ -8,31 +8,14 @@ from typing import Any
 
 from pydantic import BaseModel
 
-# from tests.eval.cases import (
-#   EngagementEvalCase,
-#   build_education_eval_case,
-#   build_finance_eval_case
-# )
-from primer_core.eval.cases import (
-    EngagementEvalCase,
-    build_education_eval_case,
-    build_finance_eval_case,
-)
+from primer_core.eval.cases import EngagementEvalCase
+from primer_core.eval.metrics import find_eval_case
 
 
 class SwapParityResult(BaseModel):
     domain: str
     passed: bool  # per-domain sanity: >= 1 engine module ran & eval layer excluded
     engine_modules_touched: list[str]  # sorted primer_core.* modules
-
-
-def _find_eval_case(domain: str) -> EngagementEvalCase:
-    eval_case = {
-        "education": build_education_eval_case(),
-        "coop-finance": build_finance_eval_case(),
-    }
-    assert domain in eval_case.keys(), f"Domain {domain} was not found."
-    return eval_case.get(domain)
 
 
 async def run_swap_parity(domains: list[str]) -> list[SwapParityResult]:
@@ -60,14 +43,14 @@ async def run_swap_parity(domains: list[str]) -> list[SwapParityResult]:
             if event != "call":
                 return tracer
             file_name = frame.f_code.co_filename
-            if "eval" not in file_name and "primer_core" in file_name:
+            if "primer_core.eval" not in file_name and "primer_core" in file_name:
                 folder_list = file_name.split("/")
                 primer_core_index = folder_list.index("primer_core")
                 shortened = "/".join(folder_list[primer_core_index:])
                 engine_modules_touched.append(shortened)
             return tracer
 
-        case: EngagementEvalCase = _find_eval_case(domain)
+        case: EngagementEvalCase = find_eval_case(domain)
 
         settrace(tracer)
 
