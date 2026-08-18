@@ -32,6 +32,9 @@ dependencies = [
     "pydantic-ai>=2,<3",
 ]
 
+[project.scripts]
+primer-eval = "primer_core.eval.harness:main"
+
 [project.optional-dependencies]
 # Extra for the LangGraph adaptive-tutoring prototype (examples/adaptive_tutoring_prototype).
 # Install with: uv sync --extra adaptive-tutoring
@@ -72,6 +75,9 @@ select = ["E", "F", "I", "W"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+    "eval: Evaluate The Primer's eval and parity harness."
+]
 
 [dependency-groups]
 dev = [

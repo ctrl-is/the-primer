@@ -14,6 +14,7 @@ from capillary_actions_sdk.ports.platform import (
     RunWorkflowResponse,
 )
 
+from primer_core.memory.core import MemoryCore
 from primer_core.orchestrator.hooks import (
     HookContext,
     HookEvent,
