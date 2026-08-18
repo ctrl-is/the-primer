@@ -11,9 +11,11 @@ from __future__ import annotations
 from primer_core.adapters.capillary.file_memory_store import FileMemoryStore
 from primer_core.adapters.capillary.kb_pgvector import PgVectorKnowledgeBase
 from primer_core.adapters.capillary.workflow_cli_runner import WorkflowCliRunner
+from primer_core.errors import KnowledgeBaseUnavailable
 
 __all__ = [
     "FileMemoryStore",
+    "KnowledgeBaseUnavailable",
     "PgVectorKnowledgeBase",
     "WorkflowCliRunner",
 ]
