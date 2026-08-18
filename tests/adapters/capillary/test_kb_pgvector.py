@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from capillary_actions_sdk.ports.knowledge import KnowledgeBasePort
 
-from primer_core.adapters.capillary import PgVectorKnowledgeBase
+from primer_core.adapters.capillary import KnowledgeBaseUnavailable, PgVectorKnowledgeBase
 
 
 class FakeSearchClient:
@@ -16,6 +16,11 @@ class FakeSearchClient:
     async def search(self, query: str, kb_names: list[str], top_k: int) -> list[dict]:
         self.calls.append((query, list(kb_names), top_k))
         return self._rows
+
+
+class TimeoutSearchClient:
+    async def search(self, query: str, kb_names: list[str], top_k: int) -> list[dict]:
+        raise TimeoutError
 
 
 async def test_is_a_real_knowledge_base_port():
@@ -80,3 +85,69 @@ async def test_empty_client_response_returns_empty_list():
     chunks = await kb.retrieve("q", ["primer-education-kb"])
 
     assert chunks == []
+
+
+async def test_timeout_is_translated_to_typed_domain_error():
+    kb = PgVectorKnowledgeBase(TimeoutSearchClient())
+
+    with pytest.raises(KnowledgeBaseUnavailable, match="retrieval timed out"):
+        await kb.retrieve("q", ["primer-education-kb"])
+
+
+async def test_malformed_rows_are_logged_and_skipped(caplog: pytest.LogCaptureFixture):
+    rows = [
+        None,
+        {"score": 0.8},
+        {"text": 42, "score": 0.8},
+        {"text": "bad score", "score": "high"},
+        {"text": "valid", "score": 0.7},
+    ]
+    kb = PgVectorKnowledgeBase(FakeSearchClient(rows))  # type: ignore[arg-type]
+
+    chunks = await kb.retrieve("q", ["primer-education-kb"])
+
+    assert [(chunk.text, chunk.score) for chunk in chunks] == [("valid", 0.7)]
+    assert "Skipping malformed knowledge-base row" in caplog.text
+
+
+async def test_all_malformed_rows_raise_typed_domain_error():
+    kb = PgVectorKnowledgeBase(FakeSearchClient([{"text": "missing score"}, {"score": 0.8}]))
+
+    with pytest.raises(KnowledgeBaseUnavailable, match=r"no usable rows \(2 malformed\)"):
+        await kb.retrieve("q", ["primer-education-kb"])
+
+
+async def test_empty_query_returns_empty_list_without_searching():
+    client = FakeSearchClient([{"text": "unused", "score": 0.9}])
+    kb = PgVectorKnowledgeBase(client)
+
+    assert await kb.retrieve("", ["primer-education-kb"]) == []
+    assert client.calls == []
+
+
+async def test_top_k_zero_returns_empty_list_without_searching():
+    client = FakeSearchClient([{"text": "unused", "score": 0.9}])
+    kb = PgVectorKnowledgeBase(client)
+
+    assert await kb.retrieve("q", ["primer-education-kb"], top_k=0) == []
+    assert client.calls == []
+
+
+async def test_top_k_larger_than_response_returns_all_rows():
+    client = FakeSearchClient([{"text": "first", "score": 0.9}, {"text": "second", "score": 0.8}])
+    kb = PgVectorKnowledgeBase(client)
+
+    chunks = await kb.retrieve("q", ["primer-education-kb"], top_k=20)
+
+    assert [chunk.text for chunk in chunks] == ["first", "second"]
+    assert client.calls[0][2] == 20
+
+
+async def test_duplicate_rows_are_collapsed_preserving_first_seen_order():
+    duplicate = {"text": "same chunk", "score": 0.9}
+    client = FakeSearchClient([duplicate, duplicate, {"text": "other", "score": 0.8}])
+    kb = PgVectorKnowledgeBase(client)
+
+    chunks = await kb.retrieve("q", ["primer-education-kb"])
+
+    assert [chunk.text for chunk in chunks] == ["same chunk", "other"]
