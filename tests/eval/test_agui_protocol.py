@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-
 import pytest
 from capillary_actions_sdk.events import (
     AGUIEvent,
@@ -10,22 +8,17 @@ from capillary_actions_sdk.events import (
 )
 
 from tests.eval.cases import (
+    CASE_BUILDERS,
+    CaseBuilder,
     EngagementEvalCase,
-    build_education_eval_case,
-    build_finance_eval_case,
-)
-
-CaseBuilder = Callable[[], EngagementEvalCase]
-
-CASE_BUILDERS: tuple[CaseBuilder, ...] = (
-    build_education_eval_case,
-    build_finance_eval_case,
 )
 
 
 async def _consume_stream(case: EngagementEvalCase) -> list[AGUIEvent]:
     events: list[AGUIEvent] = []
 
+    # Consume the stream to completion without writeback hooks.
+    # Streaming writeback and abandoned-stream behavior are scoped to DS-W7.
     stream = case.orchestrator.run_engagement_streaming(
         skill_name=case.skill_name,
         subject_id=case.subject_id,
@@ -40,7 +33,7 @@ async def _consume_stream(case: EngagementEvalCase) -> list[AGUIEvent]:
 
 
 @pytest.mark.parametrize("case_builder", CASE_BUILDERS)
-async def test_stream_emits_typed_agui_events_in_protocol_order(
+async def test_stream_starts_and_finishes_with_typed_agui_events(
     case_builder: CaseBuilder,
 ) -> None:
     case = case_builder()

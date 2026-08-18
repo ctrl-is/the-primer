@@ -1,7 +1,16 @@
-"""Copy of tests/eval/cases.py to avoid `uv run primer-eval crash`"""
+"""Canonical eval-case builders for the primer_core.eval suite.
+
+These builders are consumed at runtime by primer_core.eval itself (metrics.py,
+swap_test.py, determinism.py, harness.py) -- including via the primer-eval
+console script, which runs outside pytest and has no access to the tests
+package. The implementation therefore lives here in the shipped package;
+tests/eval/cases.py re-exports these names to keep existing test imports
+(`from tests.eval.cases import ...`) working.
+"""
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import NamedTuple
 from uuid import UUID
 
@@ -21,6 +30,9 @@ class EngagementEvalCase(NamedTuple):
     subject_id: UUID
     thread_id: str
     input_data: dict[str, object]
+
+
+CaseBuilder = Callable[[], EngagementEvalCase]
 
 
 EDUCATION_SUBJECT_ID = UUID("11111111-1111-1111-1111-111111111111")
@@ -53,6 +65,8 @@ def _build_eval_case(
 ) -> EngagementEvalCase:
     pack = load_domain_pack(domain)
 
+    # MemoryCore is required by the real orchestrator construction.
+    # No hooks are registered: DS-W6 covers routing and protocol surfaces only.
     store = InMemoryMemoryStore()
     memory = MemoryCore(schema=pack.schema, store=store)
 
@@ -118,19 +132,12 @@ def build_finance_eval_case() -> EngagementEvalCase:
                     "finance-kb-allocation-003",
                     "finance-kb-allocation-004",
                 ],
-                "writeback": {
-                    "dimension": "goals",
-                    "content": {
-                        "targets": (
-                            "Maintain sufficient liquidity before increasing long-term allocation."
-                        ),
-                        "priorities": (
-                            "The member has moderate risk tolerance and long-term savings "
-                            "goals, so the allocation should preserve near-term liquidity "
-                            "while supporting long-term growth."
-                        ),
-                    },
-                },
             },
         ),
     )
+
+
+CASE_BUILDERS: tuple[CaseBuilder, ...] = (
+    build_education_eval_case,
+    build_finance_eval_case,
+)

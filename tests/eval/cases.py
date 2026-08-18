@@ -12,6 +12,7 @@ existing test imports (`from tests.eval.cases import ...`) working.
 from __future__ import annotations
 
 from primer_core.eval.cases import (
+    CASE_BUILDERS,
     EDUCATION_INPUT,
     EDUCATION_SKILL,
     EDUCATION_SUBJECT_ID,
@@ -20,12 +21,14 @@ from primer_core.eval.cases import (
     FINANCE_SKILL,
     FINANCE_SUBJECT_ID,
     FINANCE_THREAD_ID,
+    CaseBuilder,
     EngagementEvalCase,
     build_education_eval_case,
     build_finance_eval_case,
 )
 
 __all__ = [
+    "CASE_BUILDERS",
     "EDUCATION_INPUT",
     "EDUCATION_SKILL",
     "EDUCATION_SUBJECT_ID",
@@ -34,6 +37,7 @@ __all__ = [
     "FINANCE_SKILL",
     "FINANCE_SUBJECT_ID",
     "FINANCE_THREAD_ID",
+    "CaseBuilder",
     "EngagementEvalCase",
     "build_education_eval_case",
     "build_finance_eval_case",
