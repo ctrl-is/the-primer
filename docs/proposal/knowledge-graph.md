@@ -41,6 +41,9 @@ failure:
 - Backend `TimeoutError` (including `asyncio.TimeoutError`) becomes the typed domain error
   `KnowledgeBaseUnavailable`. It is not silently degraded because an engagement may need to
   distinguish "no relevant evidence" from "retrieval did not run."
+- A response that is not a list at all (regardless of truthiness) raises
+  `KnowledgeBaseUnavailable` — a malformed whole response is an infrastructure failure, never
+  a zero-match result.
 - Malformed rows are logged and skipped. Valid rows in the same response are still returned,
   so one corrupt record cannot discard useful context.
 - If a non-empty response has no valid rows, `KnowledgeBaseUnavailable` is raised. Returning

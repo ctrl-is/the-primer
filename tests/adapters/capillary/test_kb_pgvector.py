@@ -117,6 +117,28 @@ async def test_all_malformed_rows_raise_typed_domain_error():
         await kb.retrieve("q", ["primer-education-kb"])
 
 
+async def test_non_finite_distance_rows_are_skipped_as_malformed(caplog: pytest.LogCaptureFixture):
+    rows = [
+        {"chunk": "nan distance", "distance": float("nan")},
+        {"chunk": "inf distance", "distance": float("inf")},
+        {"chunk": "valid", "distance": 0.3},
+    ]
+    kb = PgVectorKnowledgeBase(FakeSearchClient(rows))
+
+    chunks = await kb.retrieve("q", ["primer-education-kb"])
+
+    assert [(chunk.text, chunk.score) for chunk in chunks] == [("valid", pytest.approx(0.7))]
+    assert "Skipping malformed knowledge-base row" in caplog.text
+
+
+async def test_non_list_response_raises_typed_domain_error():
+    for bad_response in ({"rows": []}, "not a list", ""):
+        kb = PgVectorKnowledgeBase(FakeSearchClient(bad_response))  # type: ignore[arg-type]
+
+        with pytest.raises(KnowledgeBaseUnavailable, match="malformed response"):
+            await kb.retrieve("q", ["primer-education-kb"])
+
+
 async def test_empty_query_returns_empty_list_without_searching():
     client = FakeSearchClient([{"text": "unused", "score": 0.9}])
     kb = PgVectorKnowledgeBase(client)
@@ -130,6 +152,14 @@ async def test_top_k_zero_returns_empty_list_without_searching():
     kb = PgVectorKnowledgeBase(client)
 
     assert await kb.retrieve("q", ["primer-education-kb"], top_k=0) == []
+    assert client.calls == []
+
+
+async def test_negative_top_k_returns_empty_list_without_searching():
+    client = FakeSearchClient([{"text": "unused", "score": 0.9}])
+    kb = PgVectorKnowledgeBase(client)
+
+    assert await kb.retrieve("q", ["primer-education-kb"], top_k=-3) == []
     assert client.calls == []
 
 

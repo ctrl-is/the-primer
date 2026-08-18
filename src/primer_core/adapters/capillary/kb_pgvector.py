@@ -45,6 +45,8 @@ def _row_to_chunk(row: object) -> RetrievedChunk:
         distance = row["distance"]
         if not isinstance(distance, Real) or isinstance(distance, bool):
             raise ValueError("row distance is not numeric")
+        if not math.isfinite(float(distance)):
+            raise ValueError("row distance is not a finite number")
         score = max(0.0, min(1.0, 1.0 - float(distance)))
     else:
         raise ValueError("row has no score or distance field")
@@ -71,10 +73,10 @@ class PgVectorKnowledgeBase(KnowledgeBasePort):
         except TimeoutError as exc:
             raise KnowledgeBaseUnavailable("knowledge-base retrieval timed out") from exc
 
-        if not rows:
-            return []
         if not isinstance(rows, list):
             raise KnowledgeBaseUnavailable("knowledge base returned a malformed response")
+        if not rows:
+            return []
 
         chunks: list[RetrievedChunk] = []
         seen: set[tuple[str, float]] = set()
