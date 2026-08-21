@@ -37,17 +37,17 @@ async def run_swap_parity(domains: list[str]) -> list[SwapParityResult]:
     results: list[SwapParityResult] = []
 
     for domain in domains:
-        engine_modules_touched: list[str] = []
+        engine_modules_touched: set[str] = set()
 
         def tracer(frame: FrameType, event: str, arg: Any = None):
             if event != "call":
                 return tracer
             file_name = frame.f_code.co_filename
-            if "primer_core.eval" not in file_name and "primer_core" in file_name:
+            if "primer_core/eval" not in file_name and "primer_core" in file_name:
                 folder_list = file_name.split("/")
                 primer_core_index = folder_list.index("primer_core")
                 shortened = "/".join(folder_list[primer_core_index:])
-                engine_modules_touched.append(shortened)
+                engine_modules_touched.add(shortened)
             return tracer
 
         case: EngagementEvalCase = find_eval_case(domain)
@@ -65,11 +65,11 @@ async def run_swap_parity(domains: list[str]) -> list[SwapParityResult]:
             json.dump({}, temp_file)
 
         result = SwapParityResult(
-            domain=domain, passed=False, engine_modules_touched=engine_modules_touched
+            domain=domain, passed=False, engine_modules_touched=sorted(engine_modules_touched)
         )
 
         if engine_modules_touched and all(
-            "primer_core.eval" not in module for module in engine_modules_touched
+            "primer_core/eval" not in module for module in engine_modules_touched
         ):
             result.passed = True
 
