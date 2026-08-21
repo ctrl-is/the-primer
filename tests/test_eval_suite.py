@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -109,4 +110,5 @@ async def test_suite_is_runnable_as_first_class_entrypoint() -> None:
     {e.stderr}
             ''')
 
+    assert int(re.search(r"(\d+) passed", results[0].stdout).group(1)) >= 3
     assert all(result.returncode == 0 for result in results)

@@ -18,10 +18,8 @@ def store(request, tmp_path: Path) -> MemoryStorePort:
     return FileMemoryStore(path=tmp_path / "mem.json")
 
 
-def _match(entry_list_1: list[MemoryEntry], entry_list_2: list[MemoryEntry]) -> bool:
-    return all(entry in entry_list_2 for entry in entry_list_1) and len(entry_list_1) == len(
-        entry_list_2
-    )
+def _match(l1: list[MemoryEntry], l2: list[MemoryEntry]) -> bool:
+    return sorted(l1, key=lambda e: e.id) == sorted(l2, key=lambda e: e.id)
 
 
 async def test_store_get_round_trips_entry_unchanged(store: MemoryStorePort):
@@ -142,7 +140,7 @@ async def test_entries_from_diff_subjects_do_not_leak(store: MemoryStorePort):
     await store.store(subject_id=test_subject_1, entry=test_entry_3)
 
     await store.store(subject_id=test_subject_2, entry=test_entry_2)
-    await store.store(subject_id=test_subject_2, entry=test_entry_2)
+    await store.store(subject_id=test_subject_2, entry=test_entry_4)
 
     assert _match(await store.get(subject_id=test_subject_1), [test_entry_1, test_entry_3])
     assert _match(await store.get(subject_id=test_subject_2), [test_entry_2, test_entry_4])

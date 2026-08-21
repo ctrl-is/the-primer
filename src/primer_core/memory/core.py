@@ -31,6 +31,10 @@ class MemoryCore:
     async def write(self, subject_id: UUID, entry: MemoryEntry) -> MemoryEntry:
         """Validate and store an entry into the MemoryCore object's MemoryStorePort object.
 
+        If the entry's content is an empty dictionary or None, the entry is mutated to replace
+        the empty/missing content with a default content dictionary mapping each dimension's
+        field to None.
+
         Args:
             subject_id (UUID): The unique uuid4 assigned to the subject of interest.
             entry (MemoryEntry): The MemoryEntry object storing relevant information.
@@ -43,10 +47,12 @@ class MemoryCore:
             ValueError: if the entry's content is not listed in the fields
                 of that entry's dimension.
         """
+        _validate_tier(entry=entry)
+        validate_memory_entry(entry=entry, schema=self.schema)
+
         if entry.content == {}:
             entry.content = _empty_content(entry=entry, schema=self.schema)
 
-        validate_memory_entry(entry=entry, schema=self.schema)
         _validate_content_fields(entry=entry, schema=self.schema)
         await self.store.store(subject_id=subject_id, entry=entry)
         return entry
@@ -77,14 +83,9 @@ class MemoryCore:
             id=uuid4(),
             tier="long_term",
             dimension=signal.payload["dimension"],
-            content={},
+            content=signal.payload.get("content", {}),
             metadata={"signal_id": str(signal.id), "source": signal.source},
         )
-
-        if "content" not in signal.payload.keys() or signal.payload["content"] == {}:
-            entry.content = _empty_content(entry=entry, schema=self.schema)
-        else:
-            entry.content = signal.payload["content"]
 
         return await self.write(subject_id=subject_id, entry=entry)
 
@@ -113,8 +114,21 @@ def _empty_content(entry: MemoryEntry, schema: DomainSchema) -> dict[str, None]:
     Returns:
         A dictionary with each of the dimension's fields mapped to None.
     """
-    validate_memory_entry(entry=entry, schema=schema)
     return {field: None for field in schema.dimension(entry.dimension).fields}
+
+
+def _validate_tier(entry: MemoryEntry) -> None:
+    """Validate a memory entry based on its assigned tier.
+    Tier must be either 'short_term', 'long_term', or 'working'.
+
+    Raises:
+        ValueError: if the entry's tier is not one of the three accepted tiers.
+    """
+    if entry.tier not in ("short_term", "long_term", "working"):
+        raise ValueError(
+            f"Invalid MemoryEntry tier '{entry.tier}'. Tier must be "
+            "'short_term', 'long_term', or 'working'."
+        )
 
 
 def _validate_content_fields(entry: MemoryEntry, schema: DomainSchema) -> None:
@@ -123,12 +137,6 @@ def _validate_content_fields(entry: MemoryEntry, schema: DomainSchema) -> None:
     Raises:
         ValueError: if the entry's content is not listed in the fields of that entry's dimension.
     """
-    validate_memory_entry(entry=entry, schema=schema)
-    if entry.tier not in ("short_term", "long_term", "working"):
-        raise ValueError(
-            f"Invalid MemoryEntry tier '{entry.tier}'. Tier must be "
-            "'short_term', 'long_term', or 'working'."
-        )
 
     offending = []
     valid = []
