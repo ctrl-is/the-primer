@@ -220,3 +220,5 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 src/primer_core/eval/eval_memories/port_conformance_memory.json
+demos/demo_memories/demo_memory.json
+
