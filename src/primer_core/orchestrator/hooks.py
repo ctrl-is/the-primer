@@ -1,4 +1,5 @@
 """Domain-agnostic engagement hooks."""
+import logging
 
 from collections import defaultdict
 from collections.abc import Awaitable, Callable
@@ -10,6 +11,8 @@ from capillary_actions_sdk.schema import DomainSchema
 from pydantic import BaseModel, ConfigDict, Field
 
 from primer_core.memory import MemoryCore
+
+logger = logging.getLogger(__name__)
 
 
 class HookEvent(StrEnum):
@@ -43,4 +46,10 @@ class HookRegistry:
 
     async def fire(self, event: HookEvent, ctx: HookContext) -> None:
         for handler in self._handlers.get(event, []):
-            await handler(ctx)
+            try:
+                await handler(ctx)
+            except Exception:
+                logger.exception(
+                    "Hook handler failed for event %s",
+                    event.value,
+                )

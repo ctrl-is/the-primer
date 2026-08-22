@@ -1,4 +1,7 @@
 """Tests for hook integration in EngagementOrchestrator."""
+from contextlib import aclosing
+
+import pytest
 
 from collections.abc import AsyncIterator
 from typing import cast
@@ -34,7 +37,25 @@ from primer_core.orchestrator import (
 )
 from primer_core.skills import SkillRegistry
 
+class FailingHookStreamingRunner(RunWorkflowPort):
+    async def run_sync(
+        self,
+        request: RunWorkflowRequest,
+    ) -> RunWorkflowResponse:
+        raise AssertionError("run_engagement_streaming should not call run_sync")
 
+    async def run(
+        self,
+        request: RunWorkflowRequest,
+    ) -> AsyncIterator[AGUIEvent]:
+        yield RunStartedEvent(
+            thread_id=request.thread_id,
+            run_id="run-123",
+        )
+
+        raise RuntimeError("stream failed")
+
+    
 class RecordingRunner(RunWorkflowPort):
     def __init__(self, calls: list[str]) -> None:
         self.calls = calls
@@ -354,6 +375,44 @@ async def test_run_engagement_streaming_fires_hooks_around_typed_events() -> Non
     assert runner.requests[0].input_data == input_data
 
 
+async def test_run_engagement_streaming_fires_after_hook_when_consumer_stops_early() -> None:
+    calls: list[str] = []
+
+    schema = _schema()
+    hooks = HookRegistry()
+    runner = RecordingHookStreamingRunner(calls)
+
+    async def record_after(ctx: HookContext) -> None:
+        calls.append("after")
+
+    hooks.register(HookEvent.AFTER_ENGAGEMENT, record_after)
+
+    orchestrator = EngagementOrchestrator(
+        schema=schema,
+        runner=runner,
+        memory=_memory(schema),
+        skills=_skills(),
+        hooks=hooks,
+    )
+
+    stream = orchestrator.run_engagement_streaming(
+        skill_name="tutor-concept",
+        subject_id=uuid4(),
+        thread_id="thread-1",
+    )
+
+    async with aclosing(stream):
+        async for event in stream:
+            calls.append(f"consumer-{event.event_type.value}")
+            break
+
+    assert calls == [
+        "runner-start",
+        "consumer-RUN_STARTED",
+        "after",
+    ]
+
+
 async def test_after_engagement_writeback_calls_memory_ingest() -> None:
     calls: list[str] = []
     schema = _schema()
@@ -449,3 +508,36 @@ async def test_run_engagement_fires_struggle_hook_and_sets_next_skill() -> None:
     ]
     assert after_payloads[0]["struggling"] is True
     assert after_payloads[0]["next_skill"] == "foundational"
+
+
+async def test_run_engagement_streaming_fires_after_hook_when_runner_raises() -> None:
+    calls: list[str] = []
+
+    schema = _schema()
+    hooks = HookRegistry()
+
+    async def record_after(ctx: HookContext) -> None:
+        calls.append("after")
+
+    hooks.register(HookEvent.AFTER_ENGAGEMENT, record_after)
+
+    orchestrator = EngagementOrchestrator(
+        schema=schema,
+        runner=FailingHookStreamingRunner(),
+        memory=_memory(schema),
+        skills=_skills(),
+        hooks=hooks,
+    )
+
+    with pytest.raises(RuntimeError, match="stream failed"):
+        async for event in orchestrator.run_engagement_streaming(
+            skill_name="tutor-concept",
+            subject_id=uuid4(),
+            thread_id="thread-1",
+        ):
+            calls.append(f"consumer-{event.event_type.value}")
+
+    assert calls == [
+        "consumer-RUN_STARTED",
+        "after",
+    ]
