@@ -6,10 +6,10 @@ from types import SimpleNamespace
 from typing import Any
 from uuid import UUID, uuid4
 
+import pytest
 from capillary_actions_sdk.models.knowledge import RetrievedChunk
 from pydantic_ai import capture_run_messages
 from pydantic_ai.models.test import TestModel
-import pytest
 
 from primer_core.errors import KnowledgeBaseUnavailable
 from primer_core.interaction import InteractionAgent
