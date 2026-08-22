@@ -345,7 +345,7 @@ async def test_run_engagement_streaming_fires_hooks_around_typed_events() -> Non
     assert after_payloads == [
         {
             "input": input_data,
-            "outcome": events,
+            "streamed_events": events,
         }
     ]
 

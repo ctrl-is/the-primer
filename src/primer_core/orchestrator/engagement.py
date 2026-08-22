@@ -134,21 +134,24 @@ class EngagementOrchestrator:
                 context,
             )
 
-        events = self.runner.run(request)
         streamed_events: list[AGUIEvent] = []
 
-        async for event in events:
-            streamed_events.append(event)
+        try:
+            events = self.runner.run(request)
 
-            if event_stream is not None:
-                await event_stream.send_event(event)
+            async for event in events:
+                streamed_events.append(event)
 
-            yield event
+                if event_stream is not None:
+                    await event_stream.send_event(event)
 
-        if self.hooks is not None and context is not None:
-            context.payload["outcome"] = streamed_events
+                yield event
 
-            await self.hooks.fire(
-                HookEvent.AFTER_ENGAGEMENT,
-                context,
-            )
+        finally:
+            if self.hooks is not None and context is not None:
+                context.payload["streamed_events"] = streamed_events
+
+                await self.hooks.fire(
+                    HookEvent.AFTER_ENGAGEMENT,
+                    context,
+                )

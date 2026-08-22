@@ -17,6 +17,9 @@ async def write_back_outcome(ctx: HookContext) -> None:
     if writeback is None and isinstance(outcome, dict):
         writeback = outcome.get("writeback")
 
+    if writeback is None and "streamed_events" in ctx.payload:
+        return
+
     if not isinstance(writeback, dict):
         raise ValueError("Engagement outcome must contain a writeback mapping")
 
