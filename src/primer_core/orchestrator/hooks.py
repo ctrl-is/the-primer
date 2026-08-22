@@ -1,6 +1,6 @@
 """Domain-agnostic engagement hooks."""
-import logging
 
+import logging
 from collections import defaultdict
 from collections.abc import Awaitable, Callable
 from enum import StrEnum

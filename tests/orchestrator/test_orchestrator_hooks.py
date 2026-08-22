@@ -1,12 +1,11 @@
 """Tests for hook integration in EngagementOrchestrator."""
-from contextlib import aclosing
-
-import pytest
 
 from collections.abc import AsyncIterator
+from contextlib import aclosing
 from typing import cast
 from uuid import UUID, uuid4
 
+import pytest
 from capillary_actions_sdk.events import (
     AGUIEvent,
     RunFinishedEvent,
@@ -37,6 +36,7 @@ from primer_core.orchestrator import (
 )
 from primer_core.skills import SkillRegistry
 
+
 class FailingHookStreamingRunner(RunWorkflowPort):
     async def run_sync(
         self,
@@ -55,7 +55,7 @@ class FailingHookStreamingRunner(RunWorkflowPort):
 
         raise RuntimeError("stream failed")
 
-    
+
 class RecordingRunner(RunWorkflowPort):
     def __init__(self, calls: list[str]) -> None:
         self.calls = calls

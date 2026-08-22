@@ -76,12 +76,11 @@ async def test_hook_registry_isolates_handler_failures_and_preserves_order(
     assert calls == ["first", "failing", "third"]
 
     assert any(
-        record.getMessage()
-        == "Hook handler failed for event after_engagement"
+        record.getMessage() == "Hook handler failed for event after_engagement"
         and record.exc_info is not None
         for record in caplog.records
     )
-    
+
 
 async def test_hook_registry_unregistered_event_is_noop() -> None:
     registry = HookRegistry()
