@@ -541,3 +541,35 @@ async def test_run_engagement_streaming_fires_after_hook_when_runner_raises() ->
         "consumer-RUN_STARTED",
         "after",
     ]
+
+
+async def test_streaming_engagement_with_writeback_hook_does_not_raise() -> None:
+    calls: list[str] = []
+    schema = _schema()
+    memory = RecordingMemoryCore()
+    hooks = HookRegistry()
+
+    hooks.register(
+        HookEvent.AFTER_ENGAGEMENT,
+        write_back_outcome,
+    )
+
+    orchestrator = EngagementOrchestrator(
+        schema=schema,
+        runner=RecordingHookStreamingRunner(calls),
+        memory=memory,
+        skills=_skills(),
+        hooks=hooks,
+    )
+
+    events = [
+        event
+        async for event in orchestrator.run_engagement_streaming(
+            skill_name="tutor-concept",
+            subject_id=uuid4(),
+            thread_id="thread-1",
+        )
+    ]
+
+    assert len(events) == 3
+    assert memory.ingest_calls == []
