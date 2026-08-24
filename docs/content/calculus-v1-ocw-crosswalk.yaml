@@ -1,0 +1,309 @@
+# ============================================================
+# OCW 18.01SC Crosswalk for calculus_v1.yaml
+# ------------------------------------------------------------
+# Maps the 45 concepts of the bootstrap knowledge graph
+# (Single-Variable Calculus, OpenStax Volume 1) onto MIT
+# OpenCourseWare 18.01SC Single Variable Calculus (Fall 2010),
+# whose per-session worked examples, problem sets with
+# solutions, and exams with solutions are the intended
+# assessment item bank for the Primer's probe/score steps.
+#
+# Structure extracted from ocw.mit.edu 2026-08-23 by subagent
+# sweep (units 1-5 + final exam, 102 sessions). Mappings are
+# machine-drafted for subject-expert review.
+#
+# License: 18.01SC is CC BY-NC-SA. Same NonCommercial caveat
+# as OpenStax Calculus: fine for the academic pilot with
+# attribution, review before commercial deployment.
+# Instructors: David Jerison (lectures), Arthur Mattuck,
+# Haynes Miller, Benjamin Brubaker et al. (recitations).
+# ============================================================
+
+knowledge_graph: calculus_v1.yaml  # id 8f7a2b64-1d3e-5c09-9a41-6e2f8c5d7b10
+source_course: "MIT OCW 18.01SC Single Variable Calculus, Fall 2010"
+course_url: "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/"
+license: "CC BY-NC-SA"
+
+# Exams with solutions: the highest-value scoring references.
+assessment_anchors:
+  - name: "Exam 1 (differentiation)"
+    sessions: [21, 22]
+    covers_concepts: [defining-the-derivative, derivative-as-function, differentiation-rules,
+                      trig-derivatives, chain-rule, inverse-derivatives, implicit-differentiation,
+                      exp-log-derivatives]
+  - name: "Exam 2 (applications of differentiation)"
+    sessions: [41, 42]
+    covers_concepts: [linear-approximation, shape-of-graph, optimization, related-rates,
+                      newtons-method, mean-value-theorem, antiderivatives]
+  - name: "Exam 3 (definite integral and applications)"
+    sessions: [66, 67]
+    covers_concepts: [approximating-areas, definite-integral, fundamental-theorem,
+                      integration-formulas, substitution, volumes-slicing, cylindrical-shells]
+  - name: "Exam 4 (techniques of integration)"
+    sessions: [85, 86]
+    covers_concepts: [arc-length-surface-area, inverse-trig-integrals]
+    note: "Most of Exam 4 tests techniques beyond the Volume 1 graph; usable items must be filtered."
+  - name: "Final Exam"
+    sessions: [102]
+    covers_concepts: []  # cumulative; filter per concept
+  - name: "Problem sets 1-11 with solutions"
+    note: "Attached at unit/part level, not per session; item bank work should key items to concepts individually."
+
+concept_mappings:
+  # ---- Chapter 1: OCW assumes precalculus; mostly uncovered ----
+  - concept: functions-review
+    ocw_sessions: []
+    coverage: none
+    note: "Prerequisite at MIT; OpenStax is the sole source."
+  - concept: function-classes
+    ocw_sessions: []
+    coverage: none
+    note: "Prerequisite at MIT; OpenStax is the sole source."
+  - concept: trig-functions
+    ocw_sessions: []
+    coverage: none
+    note: "Prerequisite at MIT; OpenStax is the sole source."
+  - concept: inverse-functions
+    ocw_sessions: [{s: 15, t: "Implicit Differentiation and Inverse Functions"}]
+    coverage: partial
+    note: "Only in the context of differentiation."
+  - concept: exp-log-functions
+    ocw_sessions:
+      - {s: 17, t: "The Exponential Function, its Derivative, and its Inverse"}
+      - {s: 19, t: "An Interesting Limit Involving e"}
+      - {s: 20, t: "Hyperbolic Trig Functions"}
+    coverage: partial
+
+  # ---- Chapter 2: Limits (18.01SC treats limits lightly) ----
+  - concept: calculus-preview
+    ocw_sessions: [{s: 1, t: "Introduction to Derivatives"}]
+    coverage: partial
+  - concept: limit-of-a-function
+    ocw_sessions:
+      - {s: 4, t: "Limits and Continuity"}
+      - {s: 8, t: "Limits of Sine and Cosine"}
+    coverage: partial
+  - concept: limit-laws
+    ocw_sessions: [{s: 4, t: "Limits and Continuity"}]
+    coverage: partial
+    note: "No dedicated limit-laws session; OpenStax carries the technique work."
+  - concept: continuity
+    ocw_sessions:
+      - {s: 4, t: "Limits and Continuity"}
+      - {s: 5, t: "Discontinuity"}
+    coverage: full
+  - concept: precise-limit-definition
+    ocw_sessions: []
+    coverage: none
+    note: "18.01SC does not do epsilon-delta; OpenStax is the sole source."
+
+  # ---- Chapter 3: Derivatives (richest overlap) ----
+  - concept: defining-the-derivative
+    ocw_sessions:
+      - {s: 1, t: "Introduction to Derivatives"}
+      - {s: 2, t: "Examples of Derivatives"}
+      - {s: 3, t: "Derivative as Rate of Change"}
+    coverage: full
+  - concept: derivative-as-function
+    ocw_sessions:
+      - {s: 6, t: "Calculating Derivatives"}
+      - {s: 12, t: "Higher Derivatives"}
+    coverage: full
+  - concept: differentiation-rules
+    ocw_sessions:
+      - {s: 6, t: "Calculating Derivatives"}
+      - {s: 9, t: "Product Rule"}
+      - {s: 10, t: "Quotient Rule"}
+    coverage: full
+  - concept: rates-of-change
+    ocw_sessions: [{s: 3, t: "Derivative as Rate of Change"}]
+    coverage: partial
+    note: "Marginal cost/revenue framing is OpenStax-only."
+  - concept: trig-derivatives
+    ocw_sessions:
+      - {s: 7, t: "Derivatives of Sine and Cosine"}
+      - {s: 8, t: "Limits of Sine and Cosine"}
+    coverage: full
+  - concept: chain-rule
+    ocw_sessions: [{s: 11, t: "Chain Rule"}]
+    coverage: full
+  - concept: inverse-derivatives
+    ocw_sessions: [{s: 15, t: "Implicit Differentiation and Inverse Functions"}]
+    coverage: full
+  - concept: implicit-differentiation
+    ocw_sessions:
+      - {s: 13, t: "Implicit Differentiation"}
+      - {s: 14, t: "Examples of Implicit Differentiation"}
+    coverage: full
+  - concept: exp-log-derivatives
+    ocw_sessions:
+      - {s: 16, t: "The Derivative of a^x"}
+      - {s: 17, t: "The Exponential Function, its Derivative, and its Inverse"}
+      - {s: 18, t: "Derivatives of other Exponential Functions"}
+      - {s: 19, t: "An Interesting Limit Involving e"}
+    coverage: full
+
+  # ---- Chapter 4: Applications of Derivatives ----
+  - concept: related-rates
+    ocw_sessions: [{s: 31, t: "Related Rates"}]
+    coverage: full
+  - concept: linear-approximation
+    ocw_sessions:
+      - {s: 23, t: "Linear Approximation"}
+      - {s: 24, t: "Examples of Linear Approximation"}
+      - {s: 36, t: "Differentials"}
+    coverage: full
+    note: "OCW sessions 25-26 (quadratic approximation) are enrichment beyond the graph."
+  - concept: maxima-minima
+    ocw_sessions:
+      - {s: 27, t: "Sketching Graphs I - Polynomials and Rational Functions"}
+      - {s: 28, t: "Sketching Graphs II - General Strategies"}
+    coverage: partial
+    note: "Extrema taught inside curve sketching, not as a standalone session."
+  - concept: mean-value-theorem
+    ocw_sessions:
+      - {s: 34, t: "Introduction to the Mean Value Theorem"}
+      - {s: 35, t: "Using the Mean Value Theorem"}
+    coverage: full
+  - concept: shape-of-graph
+    ocw_sessions:
+      - {s: 27, t: "Sketching Graphs I - Polynomials and Rational Functions"}
+      - {s: 28, t: "Sketching Graphs II - General Strategies"}
+    coverage: full
+  - concept: limits-at-infinity
+    ocw_sessions:
+      - {s: 27, t: "Sketching Graphs I - Polynomials and Rational Functions"}
+      - {s: 89, t: "L'Hospital's Rule and Rates of Growth"}
+    coverage: partial
+  - concept: optimization
+    ocw_sessions:
+      - {s: 29, t: "Optimization Problems"}
+      - {s: 30, t: "Optimization Problems II"}
+      - {s: 32, t: "Ring on a String"}
+    coverage: full
+  - concept: lhopitals-rule
+    ocw_sessions:
+      - {s: 87, t: "L'Hospital's Rule"}
+      - {s: 88, t: "Examples of L'Hospital's Rule"}
+      - {s: 89, t: "L'Hospital's Rule and Rates of Growth"}
+      - {s: 90, t: "Advanced Examples of L'Hospital's Rule"}
+    coverage: full
+    note: "Lives in OCW Unit 5, late in their sequence; the graph places it earlier."
+  - concept: newtons-method
+    ocw_sessions: [{s: 33, t: "Newton's Method"}]
+    coverage: full
+  - concept: antiderivatives
+    ocw_sessions: [{s: 37, t: "Antiderivatives"}]
+    coverage: full
+
+  # ---- Chapter 5: Integration ----
+  - concept: approximating-areas
+    ocw_sessions:
+      - {s: 44, t: "Adding Areas of Rectangles"}
+      - {s: 46, t: "Riemann Sums"}
+    coverage: full
+  - concept: definite-integral
+    ocw_sessions:
+      - {s: 43, t: "Definite Integrals"}
+      - {s: 56, t: "Geometric Interpretation of Definite Integrals"}
+      - {s: 60, t: "Integrals and Averages"}
+    coverage: full
+  - concept: fundamental-theorem
+    ocw_sessions:
+      - {s: 47, t: "Introduction of the Fundamental Theorem of Calculus"}
+      - {s: 48, t: "The Fundamental Theorem of Calculus"}
+      - {s: 49, t: "Applications of the Fundamental Theorem of Calculus"}
+      - {s: 50, t: "Combining the Fundamental Theorem and the Mean Value Theorem"}
+      - {s: 51, t: "The Second Fundamental Theorem of Calculus"}
+      - {s: 52, t: "Proving the Fundamental Theorem of Calculus"}
+      - {s: 55, t: "Creating New Functions Using the Second Fundamental Theorem"}
+    coverage: full
+    note: "Deepest overlap in the whole crosswalk; seven sessions."
+  - concept: integration-formulas
+    ocw_sessions: [{s: 45, t: "Some Easy Integrals"}]
+    coverage: partial
+    note: "Net change theorem framing is OpenStax-only."
+  - concept: substitution
+    ocw_sessions: [{s: 38, t: "Integration by Substitution"}]
+    coverage: full
+    note: "OCW teaches substitution inside Unit 2 (antiderivatives), earlier than the graph."
+  - concept: exp-log-integrals
+    ocw_sessions: [{s: 54, t: "The Second Fundamental Theorem and ln(x)"}]
+    coverage: partial
+  - concept: inverse-trig-integrals
+    ocw_sessions:
+      - {s: 72, t: "Trig Substitution"}
+      - {s: 73, t: "Completing the Square"}
+    coverage: partial
+    note: "OCW reaches these integrands via Unit 4 techniques rather than directly."
+
+  # ---- Chapter 6: Applications of Integration ----
+  - concept: areas-between-curves
+    ocw_sessions: [{s: 56, t: "Geometric Interpretation of Definite Integrals"}]
+    coverage: partial
+  - concept: volumes-slicing
+    ocw_sessions:
+      - {s: 57, t: "How to Calculate Volumes"}
+      - {s: 58, t: "Volume of a Sphere, Revolving About x-axis"}
+    coverage: full
+  - concept: cylindrical-shells
+    ocw_sessions: [{s: 59, t: "Volume of a Parabaloid, Revolving About y-axis"}]
+    coverage: full
+  - concept: arc-length-surface-area
+    ocw_sessions:
+      - {s: 78, t: "Computing the Length of a Curve"}
+      - {s: 79, t: "Surface Area"}
+    coverage: full
+    note: "Lives in OCW Unit 4B."
+  - concept: physical-applications
+    ocw_sessions: []
+    coverage: none
+    note: "18.01SC does averages/probability instead of work and hydrostatic force; OpenStax is the sole source."
+  - concept: moments-centers-mass
+    ocw_sessions: [{s: 61, t: "Integrals and Weighted Averages"}]
+    coverage: partial
+    note: "Weighted averages only; Pappus and thin plates are OpenStax-only."
+  - concept: integrals-exp-log
+    ocw_sessions:
+      - {s: 53, t: "New Functions From Old"}
+      - {s: 54, t: "The Second Fundamental Theorem and ln(x)"}
+      - {s: 55, t: "Creating New Functions Using the Second Fundamental Theorem"}
+    coverage: full
+    note: "OCW's ln-as-integral treatment matches this section's spirit exactly."
+  - concept: exponential-growth-decay
+    ocw_sessions:
+      - {s: 39, t: "Introduction to Differential Equations"}
+      - {s: 40, t: "Separation of Variables"}
+    coverage: partial
+    note: "OCW frames growth/decay as differential equations."
+  - concept: hyperbolic-calculus
+    ocw_sessions: [{s: 20, t: "Hyperbolic Trig Functions"}]
+    coverage: partial
+
+# OCW material with no concept in the Volume 1 graph.
+# Honest boundary: 18.01 is a superset of OpenStax Volume 1.
+ocw_only_material:
+  - sessions: "25-26"
+    topic: "Quadratic approximation"
+  - sessions: "39-40"
+    topic: "Differential equations, separation of variables (mapped above only for growth/decay)"
+  - sessions: "62-65"
+    topic: "Probability, numerical integration, bell curve"
+  - sessions: "68-77"
+    topic: "Techniques of integration: trig powers, trig substitution, partial fractions, integration by parts (OpenStax Volume 2, chapter 3)"
+  - sessions: "80-84"
+    topic: "Parametric equations and polar coordinates (OpenStax Volume 2)"
+  - sessions: "91-93"
+    topic: "Improper integrals (OpenStax Volume 2)"
+  - sessions: "94-101"
+    topic: "Infinite series, power series, Taylor series (OpenStax Volume 2, chapters 5-6)"
+
+coverage_summary:
+  full: 25
+  partial: 15
+  none: 5
+  note: >
+    The 5 uncovered concepts are precalculus review (functions-review,
+    function-classes, trig-functions), epsilon-delta rigor
+    (precise-limit-definition), and physical-applications. Every
+    derivative and integration core concept has OCW assessment material.

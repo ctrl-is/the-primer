@@ -1,0 +1,1078 @@
+# ============================================================
+# Single-Variable Calculus (OpenStax Volume 1)
+# ------------------------------------------------------------
+# BOOTSTRAP DRAFT for the Primer engine. Machine-generated for
+# human review, not hand-authored.
+#
+# Provenance:
+#   - Concepts = the 45 numbered sections of OpenStax Calculus
+#     Volume 1 (chapters 1-6).
+#   - mastery_criteria = the book's published Learning Objectives,
+#     verbatim (prefixed "Can"), extracted 2026-08-23.
+#   - prerequisites, difficulty, bloom_level, assessment_modality,
+#     misconceptions, and pacing fields are machine-drafted and
+#     REQUIRE subject-expert review.
+#
+# License: OpenStax Calculus Volume 1 is CC BY-NC-SA 4.0.
+# Attribution: OpenStax, Rice University. NonCommercial applies
+# to the source text; review before any commercial deployment.
+# ============================================================
+
+id: "8f7a2b64-1d3e-5c09-9a41-6e2f8c5d7b10"
+name: "Single-Variable Calculus (OpenStax Volume 1)"
+description: "Functions through applications of integration: the 45 sections of OpenStax Calculus Volume 1 as a prerequisite-ordered concept graph."
+source: "bootstrapped from OpenStax Calculus Volume 1 (CC BY-NC-SA 4.0); objectives verbatim, pedagogy fields machine-drafted for review"
+
+concepts:
+  # ---------------- Chapter 1: Functions and Graphs ----------------
+  - id: functions-review
+    name: Review of Functions (1.1)
+    description: >
+      Function notation, domain and range, graphs, zeros, combining
+      functions, and symmetry.
+    prerequisites: []
+    difficulty: 1
+    tags: [ch1, precalculus, foundational]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.70
+    mastery_criteria:
+      - "Can use functional notation to evaluate a function"
+      - "Can determine the domain and range of a function"
+      - "Can draw the graph of a function"
+      - "Can find the zeros of a function"
+      - "Can recognize a function from a table of values"
+      - "Can make new functions from two or more given functions"
+      - "Can describe the symmetry properties of a function"
+    misconceptions:
+      - "Treating f(x+h) as f(x) + f(h)"
+      - "Confusing the domain restriction of a composite with that of its parts"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 15
+
+  - id: function-classes
+    name: Basic Classes of Functions (1.2)
+    description: >
+      Linear, polynomial, rational, power, root, algebraic vs
+      transcendental, piecewise functions, and graph transformations.
+    prerequisites: [functions-review]
+    difficulty: 1
+    tags: [ch1, precalculus, foundational]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.70
+    mastery_criteria:
+      - "Can calculate the slope of a linear function and interpret its meaning"
+      - "Can recognize the degree of a polynomial"
+      - "Can find the roots of a quadratic polynomial"
+      - "Can describe the graphs of basic odd and even polynomial functions"
+      - "Can identify a rational function"
+      - "Can describe the graphs of power and root functions"
+      - "Can explain the difference between algebraic and transcendental functions"
+      - "Can graph a piecewise-defined function"
+      - "Can sketch the graph of a function that has been shifted, stretched, or reflected"
+    misconceptions:
+      - "Reading a vertical shift as horizontal (f(x) + c vs f(x + c))"
+      - "Assuming every polynomial of even degree has real roots"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 20
+
+  - id: trig-functions
+    name: Trigonometric Functions (1.3)
+    description: >
+      Radians, the triangular and circular definitions, basic
+      identities, and the graphs and periods of trig functions.
+    prerequisites: [functions-review]
+    difficulty: 2
+    tags: [ch1, precalculus, trigonometry]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.72
+    mastery_criteria:
+      - "Can convert angle measures between degrees and radians"
+      - "Can recognize the triangular and circular definitions of the basic trigonometric functions"
+      - "Can write the basic trigonometric identities"
+      - "Can identify the graphs and periods of the trigonometric functions"
+      - "Can describe the shift of a sine or cosine graph from the equation of the function"
+    misconceptions:
+      - "Working in degrees where calculus formulas assume radians"
+      - "Confusing period with amplitude in transformed graphs"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 20
+
+  - id: inverse-functions
+    name: Inverse Functions (1.4)
+    description: >
+      One-to-one functions, the horizontal line test, finding and
+      graphing inverses, and inverse trigonometric functions.
+    prerequisites: [functions-review, function-classes]
+    difficulty: 2
+    tags: [ch1, precalculus]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.72
+    mastery_criteria:
+      - "Can determine the conditions for when a function has an inverse"
+      - "Can use the horizontal line test to recognize when a function is one-to-one"
+      - "Can find the inverse of a given function"
+      - "Can draw the graph of an inverse function"
+      - "Can evaluate inverse trigonometric functions"
+    misconceptions:
+      - "Reading f^-1(x) as 1/f(x)"
+      - "Forgetting the domain restriction needed to invert trig functions"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 20
+
+  - id: exp-log-functions
+    name: Exponential and Logarithmic Functions (1.5)
+    description: >
+      Exponential and logarithmic forms, the number e, change of
+      base, and the hyperbolic functions.
+    prerequisites: [inverse-functions]
+    difficulty: 2
+    tags: [ch1, precalculus]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.72
+    mastery_criteria:
+      - "Can identify the form of an exponential function"
+      - "Can explain the difference between the graphs of b^x and x^b"
+      - "Can recognize the significance of the number e"
+      - "Can identify the form of a logarithmic function"
+      - "Can explain the relationship between exponential and logarithmic functions"
+      - "Can describe how to calculate a logarithm to a different base"
+      - "Can identify the hyperbolic functions, their graphs, and basic identities"
+    misconceptions:
+      - "Treating ln(a + b) as ln a + ln b"
+      - "Confusing exponential growth b^x with power growth x^b"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 20
+
+  # ---------------- Chapter 2: Limits ----------------
+  - id: calculus-preview
+    name: A Preview of Calculus (2.1)
+    description: >
+      The tangent problem and the area problem, and how limits lead
+      to the derivative and the integral.
+    prerequisites: [functions-review]
+    difficulty: 2
+    tags: [ch2, limits, conceptual]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.72
+    mastery_criteria:
+      - "Can describe the tangent problem and how it led to the idea of a derivative"
+      - "Can explain how the idea of a limit is involved in solving the tangent problem"
+      - "Can recognize a tangent to a curve at a point as the limit of secant lines"
+      - "Can identify instantaneous velocity as the limit of average velocity over a small time interval"
+      - "Can describe the area problem and how it was solved by the integral"
+      - "Can explain how the idea of a limit is involved in solving the area problem"
+    misconceptions:
+      - "Believing a secant line becomes the tangent after finitely many steps"
+      - "Treating instantaneous velocity as distance divided by zero time"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 20
+
+  - id: limit-of-a-function
+    name: The Limit of a Function (2.2)
+    description: >
+      Limit notation, estimating limits from tables and graphs,
+      one-sided limits, infinite limits, and vertical asymptotes.
+    prerequisites: [calculus-preview, function-classes]
+    difficulty: 2
+    tags: [ch2, limits, core]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.72
+    mastery_criteria:
+      - "Can describe the limit of a function using correct notation"
+      - "Can use a table of values to estimate the limit of a function or to identify when the limit does not exist"
+      - "Can use a graph to estimate the limit of a function or to identify when the limit does not exist"
+      - "Can define one-sided limits and provide examples"
+      - "Can explain the relationship between one-sided and two-sided limits"
+      - "Can describe an infinite limit using correct notation"
+      - "Can define a vertical asymptote"
+    misconceptions:
+      - "Assuming the limit at a point must equal the function's value there"
+      - "Concluding a limit does not exist whenever the function is undefined at the point"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: limit-laws
+    name: The Limit Laws (2.3)
+    description: >
+      Evaluating limits with the limit laws, factoring, conjugates,
+      and the squeeze theorem.
+    prerequisites: [limit-of-a-function]
+    difficulty: 2
+    tags: [ch2, limits, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.72
+    mastery_criteria:
+      - "Can recognize the basic limit laws"
+      - "Can use the limit laws to evaluate the limit of a function"
+      - "Can evaluate the limit of a function by factoring"
+      - "Can use the limit laws to evaluate the limit of a polynomial or rational function"
+      - "Can evaluate the limit of a function by factoring or by using conjugates"
+      - "Can evaluate the limit of a function by using the squeeze theorem"
+    misconceptions:
+      - "Treating a 0/0 form as proof the limit does not exist"
+      - "Applying quotient limit laws when the denominator limit is zero"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: continuity
+    name: Continuity (2.4)
+    description: >
+      The three conditions for continuity at a point, types of
+      discontinuity, continuity on intervals, and the intermediate
+      value theorem.
+    prerequisites: [limit-laws]
+    difficulty: 3
+    tags: [ch2, limits, core]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can explain the three conditions for continuity at a point"
+      - "Can describe three kinds of discontinuities"
+      - "Can define continuity on an interval"
+      - "Can state the theorem for limits of composite functions"
+      - "Can provide an example of the intermediate value theorem"
+    misconceptions:
+      - "Believing a function with a limit at a point is automatically continuous there"
+      - "Using the intermediate value theorem to locate a value where hypotheses fail"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: precise-limit-definition
+    name: The Precise Definition of a Limit (2.5)
+    description: >
+      The epsilon-delta definition of a limit, applying it to prove
+      limits, and its one-sided and infinite variants.
+    prerequisites: [limit-laws]
+    difficulty: 4
+    tags: [ch2, limits, rigor]
+    bloom_level: analyze
+    assessment_modality: explanation
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can describe the epsilon-delta definition of a limit"
+      - "Can apply the epsilon-delta definition to find the limit of a function"
+      - "Can describe the epsilon-delta definitions of one-sided limits and infinite limits"
+      - "Can use the epsilon-delta definition to prove the limit laws"
+    misconceptions:
+      - "Reversing the quantifiers: choosing epsilon after delta"
+      - "Believing one verified epsilon value proves the limit"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 30
+
+  # ---------------- Chapter 3: Derivatives ----------------
+  - id: defining-the-derivative
+    name: Defining the Derivative (3.1)
+    description: >
+      Tangent lines, the derivative at a point as a limit of
+      difference quotients, and velocity as a rate of change.
+    prerequisites: [limit-laws, continuity]
+    difficulty: 3
+    tags: [ch3, derivatives, core]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can recognize the meaning of the tangent to a curve at a point"
+      - "Can calculate the slope of a tangent line"
+      - "Can identify the derivative as the limit of a difference quotient"
+      - "Can calculate the derivative of a given function at a point"
+      - "Can describe the velocity as a rate of change"
+      - "Can explain the difference between average velocity and instantaneous velocity"
+      - "Can estimate the derivative from a table of values"
+    misconceptions:
+      - "Treating the derivative as the tangent line itself rather than its slope"
+      - "Computing average rate of change and calling it instantaneous"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: derivative-as-function
+    name: The Derivative as a Function (3.2)
+    description: >
+      The derivative function, graphing f' from f, differentiability
+      and continuity, and higher-order derivatives.
+    prerequisites: [defining-the-derivative]
+    difficulty: 3
+    tags: [ch3, derivatives, core]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can define the derivative function of a given function"
+      - "Can graph a derivative function from the graph of a given function"
+      - "Can state the connection between derivatives and continuity"
+      - "Can describe three conditions for when a function does not have a derivative"
+      - "Can explain the meaning of a higher-order derivative"
+    misconceptions:
+      - "Believing continuity implies differentiability"
+      - "Confusing the graph of f' with the graph of f"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: differentiation-rules
+    name: Differentiation Rules (3.3)
+    description: >
+      Constant, power, sum, difference, product, and quotient rules,
+      combined to differentiate polynomials and rational functions.
+    prerequisites: [derivative-as-function]
+    difficulty: 2
+    tags: [ch3, derivatives, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.72
+    mastery_criteria:
+      - "Can state the constant, constant multiple, and power rules"
+      - "Can apply the sum and difference rules to combine derivatives"
+      - "Can use the product rule for finding the derivative of a product of functions"
+      - "Can use the quotient rule for finding the derivative of a quotient of functions"
+      - "Can extend the power rule to functions with negative exponents"
+      - "Can combine the differentiation rules to find the derivative of a polynomial or rational function"
+    misconceptions:
+      - "Differentiating a product term by term: (fg)' = f'g'"
+      - "Forgetting the order of terms in the quotient rule numerator"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: rates-of-change
+    name: Derivatives as Rates of Change (3.4)
+    description: >
+      Average vs instantaneous rate of change, motion along a line,
+      population growth, and marginal cost and revenue.
+    prerequisites: [derivative-as-function]
+    difficulty: 3
+    tags: [ch3, derivatives, applications]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can determine a new value of a quantity from the old value and the amount of change"
+      - "Can calculate the average rate of change and explain how it differs from the instantaneous rate of change"
+      - "Can apply rates of change to displacement, velocity, and acceleration of an object moving along a straight line"
+      - "Can predict the future population from the present value and the population growth rate"
+      - "Can use derivatives to calculate marginal cost and revenue in a business situation"
+    misconceptions:
+      - "Confusing speed with velocity when motion reverses direction"
+      - "Treating acceleration as zero whenever velocity is zero"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: trig-derivatives
+    name: Derivatives of Trigonometric Functions (3.5)
+    description: >
+      Derivatives of sine, cosine, and the other standard trig
+      functions, and their higher-order derivatives.
+    prerequisites: [differentiation-rules, trig-functions]
+    difficulty: 3
+    tags: [ch3, derivatives, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can find the derivatives of the sine and cosine function"
+      - "Can find the derivatives of the standard trigonometric functions"
+      - "Can calculate the higher-order derivatives of the sine and cosine"
+    misconceptions:
+      - "Dropping the negative sign in the derivative of cosine"
+      - "Assuming trig derivative formulas hold when angles are in degrees"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 20
+
+  - id: chain-rule
+    name: The Chain Rule (3.6)
+    description: >
+      Differentiating compositions, combining the chain rule with
+      the power, product, and quotient rules.
+    prerequisites: [differentiation-rules]
+    difficulty: 3
+    tags: [ch3, derivatives, technique, core]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can state the chain rule for the composition of two functions"
+      - "Can apply the chain rule together with the power rule"
+      - "Can apply the chain rule and the product/quotient rules correctly in combination when both are necessary"
+      - "Can recognize the chain rule for a composition of three or more functions"
+      - "Can describe the proof of the chain rule"
+    misconceptions:
+      - "Forgetting to multiply by the derivative of the inner function"
+      - "Applying the power rule to the outer function while ignoring composition"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: inverse-derivatives
+    name: Derivatives of Inverse Functions (3.7)
+    description: >
+      The inverse function theorem and the derivatives of the
+      standard inverse trigonometric functions.
+    prerequisites: [chain-rule, inverse-functions]
+    difficulty: 3
+    tags: [ch3, derivatives, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can calculate the derivative of an inverse function"
+      - "Can recognize the derivatives of the standard inverse trigonometric functions"
+    misconceptions:
+      - "Evaluating (f^-1)' at x instead of at f^-1(x)"
+      - "Treating the derivative of an inverse as the reciprocal of f'(x) at the same x"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 20
+
+  - id: implicit-differentiation
+    name: Implicit Differentiation (3.8)
+    description: >
+      Differentiating implicitly defined relations and finding
+      tangent lines to implicit curves.
+    prerequisites: [chain-rule]
+    difficulty: 3
+    tags: [ch3, derivatives, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can find the derivative of a complicated function by using implicit differentiation"
+      - "Can use implicit differentiation to determine the equation of a tangent line"
+    misconceptions:
+      - "Differentiating y-terms without the dy/dx factor"
+      - "Solving for dy/dx before differentiating every term"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: exp-log-derivatives
+    name: Derivatives of Exponential and Logarithmic Functions (3.9)
+    description: >
+      Derivatives of exponentials and logarithms, and logarithmic
+      differentiation.
+    prerequisites: [chain-rule, exp-log-functions]
+    difficulty: 3
+    tags: [ch3, derivatives, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can find the derivative of exponential functions"
+      - "Can find the derivative of logarithmic functions"
+      - "Can use logarithmic differentiation to determine the derivative of a function"
+    misconceptions:
+      - "Applying the power rule to x in the exponent: d/dx b^x = x b^(x-1)"
+      - "Differentiating ln(f(x)) without the f'(x)/f(x) structure"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  # ---------------- Chapter 4: Applications of Derivatives ----------------
+  - id: related-rates
+    name: Related Rates (4.1)
+    description: >
+      Expressing changing quantities as derivatives and relating
+      their rates through the chain rule.
+    prerequisites: [chain-rule, implicit-differentiation]
+    difficulty: 4
+    tags: [ch4, applications]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can express changing quantities in terms of derivatives"
+      - "Can find relationships among the derivatives in a given problem"
+      - "Can use the chain rule to find the rate of change of one quantity that depends on the rate of change of other quantities"
+    misconceptions:
+      - "Substituting specific values before differentiating the relation"
+      - "Treating all quantities as constants except the one asked about"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: linear-approximation
+    name: Linear Approximations and Differentials (4.2)
+    description: >
+      Linearization at a point, differentials, and estimating change
+      and error.
+    prerequisites: [derivative-as-function]
+    difficulty: 3
+    tags: [ch4, applications]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can describe the linear approximation to a function at a point"
+      - "Can write the linearization of a given function"
+      - "Can draw a graph that illustrates the use of differentials to approximate the change in a quantity"
+      - "Can calculate the relative error and percentage error in using a differential approximation"
+    misconceptions:
+      - "Using the linearization far from the point of tangency without noting error growth"
+      - "Confusing dy (differential) with Δy (actual change)"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: maxima-minima
+    name: Maxima and Minima (4.3)
+    description: >
+      Absolute and local extrema, critical points, and locating
+      absolute extrema on closed intervals.
+    prerequisites: [derivative-as-function]
+    difficulty: 3
+    tags: [ch4, applications, core]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can define absolute extrema"
+      - "Can define local extrema"
+      - "Can explain how to find the critical points of a function over a closed interval"
+      - "Can describe how to use critical points to locate absolute extrema over a closed interval"
+    misconceptions:
+      - "Assuming every critical point is a local extremum"
+      - "Forgetting to check interval endpoints for absolute extrema"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: mean-value-theorem
+    name: The Mean Value Theorem (4.4)
+    description: >
+      Rolle's theorem, the Mean Value Theorem, and its consequences.
+    prerequisites: [maxima-minima]
+    difficulty: 3
+    tags: [ch4, theory]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can explain the meaning of Rolle's theorem"
+      - "Can describe the significance of the Mean Value Theorem"
+      - "Can state three important consequences of the Mean Value Theorem"
+    misconceptions:
+      - "Applying the theorem when continuity or differentiability hypotheses fail"
+      - "Believing the guaranteed point c is unique or computable without work"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: shape-of-graph
+    name: Derivatives and the Shape of a Graph (4.5)
+    description: >
+      First and second derivative tests, concavity, and inflection
+      points.
+    prerequisites: [maxima-minima, mean-value-theorem]
+    difficulty: 4
+    tags: [ch4, applications, core]
+    bloom_level: analyze
+    assessment_modality: explanation
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can explain how the sign of the first derivative affects the shape of a function's graph"
+      - "Can state the first derivative test for critical points"
+      - "Can use concavity and inflection points to explain how the sign of the second derivative affects the shape of a function's graph"
+      - "Can explain the concavity test for a function over an open interval"
+      - "Can explain the relationship between a function and its first and second derivatives"
+      - "Can state the second derivative test for local extrema"
+    misconceptions:
+      - "Assuming f''(x) = 0 always marks an inflection point"
+      - "Reading increasing f' as positive f"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: limits-at-infinity
+    name: Limits at Infinity and Asymptotes (4.6)
+    description: >
+      End behavior, horizontal and oblique asymptotes, and full
+      curve sketching from derivatives.
+    prerequisites: [limit-of-a-function, shape-of-graph]
+    difficulty: 4
+    tags: [ch4, applications]
+    bloom_level: analyze
+    assessment_modality: application
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can calculate the limit of a function as x increases or decreases without bound"
+      - "Can recognize a horizontal asymptote on the graph of a function"
+      - "Can estimate the end behavior of a function as x increases or decreases without bound"
+      - "Can recognize an oblique asymptote on the graph of a function"
+      - "Can analyze a function and its derivatives to draw its graph"
+    misconceptions:
+      - "Believing a graph can never cross its horizontal asymptote"
+      - "Treating infinity as a number that can be substituted directly"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: optimization
+    name: Applied Optimization Problems (4.7)
+    description: >
+      Setting up and solving optimization problems in applied
+      contexts.
+    prerequisites: [maxima-minima, shape-of-graph]
+    difficulty: 4
+    tags: [ch4, applications]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can set up and solve optimization problems in several applied fields"
+    misconceptions:
+      - "Optimizing before reducing to a single variable via the constraint"
+      - "Reporting the critical value of x instead of the quantity the problem asks for"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: lhopitals-rule
+    name: L'Hopital's Rule (4.8)
+    description: >
+      Recognizing indeterminate forms and applying L'Hopital's rule;
+      relative growth rates of functions.
+    prerequisites: [exp-log-derivatives, limit-laws]
+    difficulty: 3
+    tags: [ch4, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can recognize when to apply L'Hopital's rule"
+      - "Can identify indeterminate forms produced by quotients, products, subtractions, and powers, and apply L'Hopital's rule in each case"
+      - "Can describe the relative growth rates of functions"
+    misconceptions:
+      - "Applying the rule to quotients that are not indeterminate"
+      - "Differentiating the quotient with the quotient rule instead of top and bottom separately"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: newtons-method
+    name: Newton's Method (4.9)
+    description: >
+      Root-finding by iterated tangent lines, and when the method
+      fails.
+    prerequisites: [linear-approximation]
+    difficulty: 3
+    tags: [ch4, technique, numerical]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can describe the steps of Newton's method"
+      - "Can explain what an iterative process means"
+      - "Can recognize when Newton's method does not work"
+      - "Can apply iterative processes to various situations"
+    misconceptions:
+      - "Expecting convergence from any starting point"
+      - "Confusing the root of the tangent line with the root of the function"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: antiderivatives
+    name: Antiderivatives (4.10)
+    description: >
+      General antiderivatives, indefinite integral notation, the
+      power rule for integrals, and initial-value problems.
+    prerequisites: [differentiation-rules]
+    difficulty: 2
+    tags: [ch4, integration, core]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.72
+    mastery_criteria:
+      - "Can find the general antiderivative of a given function"
+      - "Can explain the terms and notation used for an indefinite integral"
+      - "Can state the power rule for integrals"
+      - "Can use antidifferentiation to solve simple initial-value problems"
+    misconceptions:
+      - "Omitting the constant of integration"
+      - "Applying the power rule for integrals to 1/x"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 20
+
+  # ---------------- Chapter 5: Integration ----------------
+  - id: approximating-areas
+    name: Approximating Areas (5.1)
+    description: >
+      Sigma notation, rectangular approximations, and Riemann sums.
+    prerequisites: [limit-laws]
+    difficulty: 3
+    tags: [ch5, integration, core]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can use sigma (summation) notation to calculate sums and powers of integers"
+      - "Can use the sum of rectangular areas to approximate the area under a curve"
+      - "Can use Riemann sums to approximate area"
+    misconceptions:
+      - "Believing more rectangles always over- or always under-estimate regardless of monotonicity"
+      - "Mixing up left-endpoint and right-endpoint rules"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: definite-integral
+    name: The Definite Integral (5.2)
+    description: >
+      The definition of the definite integral, integrability, net
+      area, properties, and average value.
+    prerequisites: [approximating-areas]
+    difficulty: 3
+    tags: [ch5, integration, core]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can state the definition of the definite integral"
+      - "Can explain the terms integrand, limits of integration, and variable of integration"
+      - "Can explain when a function is integrable"
+      - "Can describe the relationship between the definite integral and net area"
+      - "Can use geometry and the properties of definite integrals to evaluate them"
+      - "Can calculate the average value of a function"
+    misconceptions:
+      - "Treating the definite integral as always equal to geometric area, ignoring sign"
+      - "Believing only continuous functions are integrable"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: fundamental-theorem
+    name: The Fundamental Theorem of Calculus (5.3)
+    description: >
+      The Mean Value Theorem for Integrals and both parts of the
+      Fundamental Theorem of Calculus.
+    prerequisites: [definite-integral, antiderivatives, mean-value-theorem]
+    difficulty: 4
+    tags: [ch5, integration, core, theory]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can describe the meaning of the Mean Value Theorem for Integrals"
+      - "Can state the meaning of the Fundamental Theorem of Calculus, Part 1"
+      - "Can use the Fundamental Theorem of Calculus, Part 1, to evaluate derivatives of integrals"
+      - "Can state the meaning of the Fundamental Theorem of Calculus, Part 2"
+      - "Can use the Fundamental Theorem of Calculus, Part 2, to evaluate definite integrals"
+      - "Can explain the relationship between differentiation and integration"
+    misconceptions:
+      - "Forgetting the chain rule factor when the upper limit is a function of x"
+      - "Applying Part 2 across a discontinuity of the integrand"
+    decay_halflife_days: 28
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: integration-formulas
+    name: Integration Formulas and the Net Change Theorem (5.4)
+    description: >
+      Basic integration formulas, the net change theorem, and
+      integrals of odd and even functions.
+    prerequisites: [fundamental-theorem]
+    difficulty: 3
+    tags: [ch5, integration, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can apply the basic integration formulas"
+      - "Can explain the significance of the net change theorem"
+      - "Can use the net change theorem to solve applied problems"
+      - "Can apply the integrals of odd and even functions"
+    misconceptions:
+      - "Confusing net change with total distance for motion problems"
+      - "Using odd/even shortcuts on intervals not symmetric about zero"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: substitution
+    name: Substitution (5.5)
+    description: >
+      Substitution for indefinite and definite integrals.
+    prerequisites: [fundamental-theorem, chain-rule]
+    difficulty: 3
+    tags: [ch5, integration, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can use substitution to evaluate indefinite integrals"
+      - "Can use substitution to evaluate definite integrals"
+    misconceptions:
+      - "Keeping the original x-limits after substituting u"
+      - "Substituting u without accounting for du"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: exp-log-integrals
+    name: Integrals Involving Exponential and Logarithmic Functions (5.6)
+    description: >
+      Integrating exponential functions and integrands that produce
+      logarithms.
+    prerequisites: [substitution, exp-log-derivatives]
+    difficulty: 3
+    tags: [ch5, integration, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can integrate functions involving exponential functions"
+      - "Can integrate functions involving logarithmic functions"
+    misconceptions:
+      - "Integrating 1/x with the power rule"
+      - "Dropping the absolute value in the antiderivative ln|x|"
+    decay_halflife_days: 21
+    max_attempts: 3
+    estimated_minutes: 20
+
+  - id: inverse-trig-integrals
+    name: Integrals Resulting in Inverse Trigonometric Functions (5.7)
+    description: >
+      Recognizing integrands whose antiderivatives are inverse
+      trigonometric functions.
+    prerequisites: [substitution, inverse-derivatives]
+    difficulty: 3
+    tags: [ch5, integration, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can integrate functions resulting in inverse trigonometric functions"
+    misconceptions:
+      - "Confusing the arctan and arcsin integrand patterns"
+      - "Missing the constant factor when the denominator is a^2 + x^2 with a not equal to 1"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 20
+
+  # ---------------- Chapter 6: Applications of Integration ----------------
+  - id: areas-between-curves
+    name: Areas between Curves (6.1)
+    description: >
+      Areas of regions bounded by curves, integrating with respect
+      to either variable, and compound regions.
+    prerequisites: [substitution]
+    difficulty: 3
+    tags: [ch6, applications]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can determine the area of a region between two curves by integrating with respect to the independent variable"
+      - "Can find the area of a compound region"
+      - "Can determine the area of a region between two curves by integrating with respect to the dependent variable"
+    misconceptions:
+      - "Integrating f - g without checking which curve is on top over each subinterval"
+      - "Ignoring intersection points that split the region"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: volumes-slicing
+    name: Determining Volumes by Slicing (6.2)
+    description: >
+      Volumes by cross-sections, and solids of revolution via the
+      disk and washer methods.
+    prerequisites: [areas-between-curves]
+    difficulty: 4
+    tags: [ch6, applications]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can determine the volume of a solid by integrating a cross-section (the slicing method)"
+      - "Can find the volume of a solid of revolution using the disk method"
+      - "Can find the volume of a solid of revolution with a cavity using the washer method"
+    misconceptions:
+      - "Using the radius of the outer curve alone when the solid has a cavity"
+      - "Squaring the difference of radii instead of differencing the squares"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: cylindrical-shells
+    name: Volumes of Revolution, Cylindrical Shells (6.3)
+    description: >
+      The shell method and choosing between shells, disks, and
+      washers.
+    prerequisites: [volumes-slicing]
+    difficulty: 4
+    tags: [ch6, applications]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can calculate the volume of a solid of revolution by using the method of cylindrical shells"
+      - "Can compare the different methods for calculating a volume of revolution"
+    misconceptions:
+      - "Using the distance to the curve instead of to the axis of rotation as the shell radius"
+      - "Choosing the integration variable that fights the geometry"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: arc-length-surface-area
+    name: Arc Length of a Curve and Surface Area (6.4)
+    description: >
+      Arc length in both orientations and surface area of solids of
+      revolution.
+    prerequisites: [substitution, differentiation-rules]
+    difficulty: 4
+    tags: [ch6, applications]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can determine the length of a curve, y = f(x), between two points"
+      - "Can determine the length of a curve, x = g(y), between two points"
+      - "Can find the surface area of a solid of revolution"
+    misconceptions:
+      - "Dropping the square root or the 1 + (f')^2 structure in the arc length integrand"
+      - "Confusing the arc length and surface area formulas"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: physical-applications
+    name: Physical Applications (6.5)
+    description: >
+      Mass from density, work done by variable forces and pumping
+      problems, and hydrostatic force.
+    prerequisites: [volumes-slicing]
+    difficulty: 5
+    tags: [ch6, applications, physics]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.80
+    mastery_criteria:
+      - "Can determine the mass of a one-dimensional object from its linear density function"
+      - "Can determine the mass of a two-dimensional circular object from its radial density function"
+      - "Can calculate the work done by a variable force acting along a line"
+      - "Can calculate the work done in pumping a liquid from one height to another"
+      - "Can find the hydrostatic force against a submerged vertical plate"
+    misconceptions:
+      - "Using W = Fd when the force varies along the displacement"
+      - "Measuring pumping distance from the tank bottom instead of from each slice"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 35
+
+  - id: moments-centers-mass
+    name: Moments and Centers of Mass (6.6)
+    description: >
+      Centers of mass along a line and of thin plates, symmetry, and
+      the theorem of Pappus.
+    prerequisites: [areas-between-curves, physical-applications]
+    difficulty: 4
+    tags: [ch6, applications, physics]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can find the center of mass of objects distributed along a line"
+      - "Can locate the center of mass of a thin plate"
+      - "Can use symmetry to help locate the centroid of a thin plate"
+      - "Can apply the theorem of Pappus for volume"
+    misconceptions:
+      - "Confusing the moment about x with the moment about y"
+      - "Assuming the centroid always lies inside the region"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: integrals-exp-log
+    name: Integrals, Exponential Functions, and Logarithms (6.7)
+    description: >
+      The natural logarithm defined as an integral, e defined
+      through an integral, and general exponentials and logarithms.
+    prerequisites: [fundamental-theorem, exp-log-functions]
+    difficulty: 4
+    tags: [ch6, theory]
+    bloom_level: understand
+    assessment_modality: explanation
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can write the definition of the natural logarithm as an integral"
+      - "Can recognize the derivative of the natural logarithm"
+      - "Can integrate functions involving the natural logarithmic function"
+      - "Can define the number e through an integral"
+      - "Can recognize the derivative and integral of the exponential function"
+      - "Can prove properties of logarithms and exponential functions using integrals"
+      - "Can express general logarithmic and exponential functions in terms of natural logarithms and exponentials"
+    misconceptions:
+      - "Treating the integral definition of ln as circular with the earlier algebraic one"
+      - "Assuming log properties without proof in this framework"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 30
+
+  - id: exponential-growth-decay
+    name: Exponential Growth and Decay (6.8)
+    description: >
+      Growth and decay models, doubling time, half-life, compound
+      interest, and Newton's law of cooling.
+    prerequisites: [integrals-exp-log]
+    difficulty: 3
+    tags: [ch6, applications, modeling]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.75
+    mastery_criteria:
+      - "Can use the exponential growth model in applications, including population growth and compound interest"
+      - "Can explain the concept of doubling time"
+      - "Can use the exponential decay model in applications, including radioactive decay and Newton's law of cooling"
+      - "Can explain the concept of half-life"
+    misconceptions:
+      - "Treating the growth rate k as the percentage change per unit time"
+      - "Applying Newton's law of cooling with ambient temperature omitted"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 25
+
+  - id: hyperbolic-calculus
+    name: Calculus of the Hyperbolic Functions (6.9)
+    description: >
+      Derivatives and integrals of hyperbolic and inverse hyperbolic
+      functions, and the catenary.
+    prerequisites: [integrals-exp-log]
+    difficulty: 4
+    tags: [ch6, technique]
+    bloom_level: apply
+    assessment_modality: application
+    passing_threshold: 0.78
+    mastery_criteria:
+      - "Can apply the formulas for derivatives and integrals of the hyperbolic functions"
+      - "Can apply the formulas for the derivatives of the inverse hyperbolic functions and their associated integrals"
+      - "Can describe the common applied conditions of a catenary curve"
+    misconceptions:
+      - "Importing trig sign patterns: expecting the derivative of cosh to be negative"
+      - "Confusing hyperbolic identities with their trigonometric counterparts"
+    decay_halflife_days: 14
+    max_attempts: 3
+    estimated_minutes: 25
