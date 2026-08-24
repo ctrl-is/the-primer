@@ -93,9 +93,7 @@ async def run_memory_roundtrip(
     )
 
     session_2_working_memory_entries: list[MemoryEntry] = (
-        await second_orchestrator.memory.assemble_working_memory(
-            subject_id=case.subject_id
-        )
+        await second_orchestrator.memory.assemble_working_memory(subject_id=case.subject_id)
     ).entries
 
     with open(file_path, "w") as temp_file:
@@ -120,7 +118,7 @@ same FileMemoryStore path
     if passed:
         print(
             f"[{domain}] assemble_working_memory surfaces "
-            "the first session's outcome --> MEMORY PASS"
+            "the first session's outcome --> MEMORY PASS / DEMO SUCCESS"
         )
     else:
         print(

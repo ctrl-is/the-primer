@@ -8,12 +8,11 @@ import sys
 from pathlib import Path
 
 from capillary_actions_sdk.events import AGUIEvent
-
 from demo_education import run_memory_roundtrip
+
 from primer_core.eval.cases import EngagementEvalCase
 from primer_core.eval.harness import format_report, run_eval_suite
 from primer_core.eval.metrics import find_eval_case
-
 
 DOMAINS = ["education", "coop-finance"]
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -55,10 +54,7 @@ async def run_domain_leg(domain: str) -> bool:
 
     case = find_eval_case(domain)
 
-    print(
-        f"Engine: {type(case.orchestrator).__module__}."
-        f"{type(case.orchestrator).__name__}"
-    )
+    print(f"Engine: {type(case.orchestrator).__module__}.{type(case.orchestrator).__name__}")
     print(f"Skill: {case.skill_name}")
 
     streaming_passed = await run_streaming_leg(domain, case)
@@ -70,10 +66,7 @@ async def run_domain_leg(domain: str) -> bool:
 
     passed = streaming_passed and memory_passed
 
-    print(
-        f"\n[{domain}] domain leg: "
-        f"{'PASS' if passed else 'FAIL'}"
-    )
+    print(f"\n[{domain}] domain leg: {'PASS' if passed else 'FAIL'}")
 
     return passed
 
@@ -122,10 +115,7 @@ async def run_demo() -> int:
     print("PRIMER DUAL-DOMAIN EXIT DEMO")
     print("=" * 88)
 
-    domain_results = [
-        await run_domain_leg(domain)
-        for domain in DOMAINS
-    ]
+    domain_results = [await run_domain_leg(domain) for domain in DOMAINS]
 
     print("\n" + "=" * 88)
     print("SWAP PARITY + TRANSITION METRICS")
@@ -136,17 +126,10 @@ async def run_demo() -> int:
 
     pytest_passed = run_pytest_gate()
 
-    passed = (
-        all(domain_results)
-        and eval_report.passed
-        and pytest_passed
-    )
+    passed = all(domain_results) and eval_report.passed and pytest_passed
 
     print("\n" + "=" * 88)
-    print(
-        "PROGRAM EXIT GATE: "
-        f"{'PASS' if passed else 'FAIL'}"
-    )
+    print(f"PROGRAM EXIT GATE: {'PASS' if passed else 'FAIL'}")
     print("=" * 88)
 
     return 0 if passed else 1
