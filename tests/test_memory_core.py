@@ -57,6 +57,43 @@ class TestMemoryCoreWrite:
         assert test_entry == result_entry
         assert await test_store.get(test_subject_id) == [test_entry]
 
+    async def test_write_ingest_rejects_invalid_entry_tier(self):
+        """
+        LD-W7 Scenario
+        ---------------
+        Scenario: write/ingest rejects a MemoryEntry object with an invalid entry tier
+
+        Given a MemoryCore built from an education DomainSchema and an InMemoryMemoryStore
+        And a MemoryEntry in the declared dimension "history" with declared content fields
+            and a tier of "invalid_tier
+        When I call write(subject_id, entry)
+        A ValueError is raised because the tier was not in ('long_term', 'short_term', 'working')
+        """
+        test_schema = DomainSchema(
+            domain="education",
+            subject="learner",
+            dimensions=[DimensionSpec(name="history", fields=["courses_completed"])],
+            knowledge_base=KnowledgeBaseWiring(kb_names=["primer-education-kb"]),
+            engagements=["tutor-concept"],
+        )
+        test_store = InMemoryMemoryStore()
+
+        test_subject_id = uuid4()
+
+        test_core = MemoryCore(schema=test_schema, store=test_store)
+
+        test_entry = MemoryEntry(
+            id=uuid4(),
+            tier="invalid_tier",
+            dimension="history",
+            content={
+                "courses_completed": ["APUSH"],
+            },
+        )
+
+        with pytest.raises(ValueError, match="Invalid MemoryEntry tier"):
+            await test_core.write(subject_id=test_subject_id, entry=test_entry)
+
 
 class TestMemoryCoreIngest:
     async def test_ingest_maps_PreferenceSignal_to_schema_validated_MemoryEntry(self):
@@ -175,6 +212,9 @@ class TestMemoryCoreIngest:
         with pytest.raises(ValueError, match="unknown_field"):
             await test_core.ingest(subject_id=test_subject_id, signal=test_preference_signal)
 
+        with pytest.raises(ValueError, match="The following entry keys do not match"):
+            await test_core.ingest(subject_id=test_subject_id, signal=test_preference_signal)
+
     async def test_ingest_without_a_dimension_key_fails_loudly(self):
         """
         BDD Scenario #5
@@ -183,7 +223,7 @@ class TestMemoryCoreIngest:
 
         Given a PreferenceSignal whose payload has no "dimension" key
         When I ingest it
-        Then a KeyError is raised
+        Then a *ValueError* is raised
         """
         test_schema = DomainSchema(
             domain="education",
@@ -207,7 +247,7 @@ class TestMemoryCoreIngest:
 
         test_core = MemoryCore(schema=test_schema, store=test_store)
 
-        with pytest.raises(KeyError):
+        with pytest.raises(ValueError, match="PreferenceSignal object must have a dimension"):
             await test_core.ingest(subject_id=test_subject_id, signal=test_preference_signal)
 
 

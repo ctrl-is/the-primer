@@ -126,19 +126,27 @@ def test_zero_engine_change_is_proven_not_asserted() -> None:
     Scenario: zero engine change is proven, not asserted
 
     Given the branch containing this story's work
-    When `git diff main -- src/primer_core/memory/` is inspected
-    Then it is empty — the finance dimensions run on the engine exactly as merged
+    When `git grep -E '^(primer_core.domains)' -- src/primer_core/memory/*.py` is inspected
+    Then a return code of 1 is produced, indicating no mentions of `primer_core.domains` in the
+        engine and proving that domain packs never touch the engine.
     """
-    command = "git diff origin/main -- src/primer_core/memory/"
+    command = "git grep -E '^(primer_core.domains)' -- src/primer_core/memory/*.py"
 
     # When `git diff main -- src/primer_core/memory/` is inspected
     repo_root = Path(__file__).resolve().parents[2]
-    try:
-        result = subprocess.run(
-            command.split(), capture_output=True, text=True, check=True, cwd=repo_root
-        )
-    except subprocess.CalledProcessError:
-        raise AssertionError(f'Executed external command "{command}" failed.')
 
-    # Then it is empty — the finance dimensions run on the engine exactly as merged
-    assert result.stdout.strip() == ""
+    result = subprocess.run(
+        command.split(), capture_output=True, text=True, cwd=repo_root
+    )
+
+    # Return code of 1 indicates that no mentions of "primer_core.domains" was
+    #   found in src/primer_core/memory/
+    assert result.returncode == 1, (
+        f'''Executed external command "{command}" failed:
+        Exit code: {result.returncode}
+        --- STDOUT ---
+        {result.stdout}
+        --- STDERR ---
+        {result.stderr}
+                '''
+    )

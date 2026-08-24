@@ -31,6 +31,10 @@ class MemoryCore:
     async def write(self, subject_id: UUID, entry: MemoryEntry) -> MemoryEntry:
         """Validate and store an entry into the MemoryCore object's MemoryStorePort object.
 
+        If the entry's content is an empty dictionary or None, the entry is mutated to replace
+        the empty/missing content with a default content dictionary mapping each dimension's
+        field to None.
+
         Args:
             subject_id (UUID): The unique uuid4 assigned to the subject of interest.
             entry (MemoryEntry): The MemoryEntry object storing relevant information.
@@ -43,7 +47,12 @@ class MemoryCore:
             ValueError: if the entry's content is not listed in the fields
                 of that entry's dimension.
         """
+        _validate_tier(entry=entry)
         validate_memory_entry(entry=entry, schema=self.schema)
+
+        if entry.content == {}:
+            entry.content = _empty_content(entry=entry, schema=self.schema)
+
         _validate_content_fields(entry=entry, schema=self.schema)
         await self.store.store(subject_id=subject_id, entry=entry)
         return entry
@@ -64,6 +73,12 @@ class MemoryCore:
             ValueError: if the entry's content is not listed in the fields
                 of that entry's dimension.
         """
+        if "dimension" not in signal.payload.keys():
+            raise ValueError(
+                "PreferenceSignal object must have a dimension (str) in its payload.\n"
+                f"\nCurrent payload: {signal.payload}"
+            )
+
         entry = MemoryEntry(
             id=uuid4(),
             tier="long_term",
@@ -71,6 +86,7 @@ class MemoryCore:
             content=signal.payload.get("content", {}),
             metadata={"signal_id": str(signal.id), "source": signal.source},
         )
+
         return await self.write(subject_id=subject_id, entry=entry)
 
     async def assemble_working_memory(self, subject_id: UUID) -> WorkingMemoryAssembly:
@@ -87,12 +103,41 @@ class MemoryCore:
         return WorkingMemoryAssembly(learner_id=subject_id, entries=entries)
 
 
+def _empty_content(entry: MemoryEntry, schema: DomainSchema) -> dict[str, None]:
+    """In the case that a MemoryEntry has missing/empty content, creates a default content
+    library where each of the entry's dimension's fields are mapped to None.
+
+    Args:
+        entry (MemoryEntry): the entry from which the relevant dimension is taken
+        schema (DomainSchema): the schema from which the dimension's fields are determined
+
+    Returns:
+        A dictionary with each of the dimension's fields mapped to None.
+    """
+    return {field: None for field in schema.dimension(entry.dimension).fields}
+
+
+def _validate_tier(entry: MemoryEntry) -> None:
+    """Validate a memory entry based on its assigned tier.
+    Tier must be either 'short_term', 'long_term', or 'working'.
+
+    Raises:
+        ValueError: if the entry's tier is not one of the three accepted tiers.
+    """
+    if entry.tier not in ("short_term", "long_term", "working"):
+        raise ValueError(
+            f"Invalid MemoryEntry tier '{entry.tier}'. Tier must be "
+            "'short_term', 'long_term', or 'working'."
+        )
+
+
 def _validate_content_fields(entry: MemoryEntry, schema: DomainSchema) -> None:
     """Validate a memory entry against a domain schema based on the entry's content.
 
     Raises:
         ValueError: if the entry's content is not listed in the fields of that entry's dimension.
     """
+
     offending = []
     valid = []
     for field in entry.content.keys():
@@ -104,5 +149,5 @@ def _validate_content_fields(entry: MemoryEntry, schema: DomainSchema) -> None:
     if offending:
         raise ValueError(
             f"The following entry keys do not match with the provided schema: {offending}\n"
-            f"Valid fields: {valid}"
+            f"Valid fields: {valid}\n\n"
         )
