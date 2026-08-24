@@ -2,17 +2,23 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 from uuid import UUID
 
 from pydantic_ai import Agent
 from pydantic_ai.models import Model
 
+from primer_core.errors import KnowledgeBaseUnavailable
+
 if TYPE_CHECKING:
     from capillary_actions_sdk.ports.knowledge import KnowledgeBasePort
     from capillary_actions_sdk.schema import DomainSchema
 
     from primer_core.memory import MemoryCore
+
+
+logger = logging.getLogger(__name__)
 
 
 class InteractionAgent:
@@ -41,11 +47,17 @@ class InteractionAgent:
         """Produce one interaction turn using KB and learner-memory context."""
         kb_names = list(self.schema.knowledge_base.kb_names)
 
-        chunks = await self.kb.retrieve(
-            user_input,
-            kb_names,
-            top_k=5,
-        )
+        try:
+            chunks = await self.kb.retrieve(
+                user_input,
+                kb_names,
+                top_k=5,
+            )
+        except KnowledgeBaseUnavailable:
+            logger.warning(
+                "Knowledge base unavailable; continuing interaction without retrieved context"
+            )
+            chunks = []
 
         working_memory = await self.memory.assemble_working_memory(subject_id)
 

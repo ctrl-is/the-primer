@@ -1,5 +1,6 @@
 """Tests for domain-agnostic engagement hooks."""
 
+import logging
 from typing import cast
 
 from primer_core.orchestrator.hooks import HookContext, HookEvent, HookRegistry
@@ -40,6 +41,45 @@ async def test_hook_registry_fires_handlers_in_registration_order() -> None:
     await registry.fire(HookEvent.AFTER_ENGAGEMENT, context)
 
     assert calls == ["first", "second"]
+
+
+async def test_hook_registry_isolates_handler_failures_and_preserves_order(
+    caplog,
+) -> None:
+    registry = HookRegistry()
+    context = _context()
+    calls: list[str] = []
+
+    async def first_handler(ctx: HookContext) -> None:
+        assert ctx is context
+        calls.append("first")
+
+    async def failing_handler(ctx: HookContext) -> None:
+        assert ctx is context
+        calls.append("failing")
+        raise RuntimeError("hook failed")
+
+    async def third_handler(ctx: HookContext) -> None:
+        assert ctx is context
+        calls.append("third")
+
+    registry.register(HookEvent.AFTER_ENGAGEMENT, first_handler)
+    registry.register(HookEvent.AFTER_ENGAGEMENT, failing_handler)
+    registry.register(HookEvent.AFTER_ENGAGEMENT, third_handler)
+
+    with caplog.at_level(
+        logging.ERROR,
+        logger="primer_core.orchestrator.hooks",
+    ):
+        await registry.fire(HookEvent.AFTER_ENGAGEMENT, context)
+
+    assert calls == ["first", "failing", "third"]
+
+    assert any(
+        record.getMessage() == "Hook handler failed for event after_engagement"
+        and record.exc_info is not None
+        for record in caplog.records
+    )
 
 
 async def test_hook_registry_unregistered_event_is_noop() -> None:

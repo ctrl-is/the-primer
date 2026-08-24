@@ -6,10 +6,12 @@ from types import SimpleNamespace
 from typing import Any
 from uuid import UUID, uuid4
 
+import pytest
 from capillary_actions_sdk.models.knowledge import RetrievedChunk
 from pydantic_ai import capture_run_messages
 from pydantic_ai.models.test import TestModel
 
+from primer_core.errors import KnowledgeBaseUnavailable
 from primer_core.interaction import InteractionAgent
 from primer_core.testing.fakes import FakeKnowledgeBase
 
@@ -55,6 +57,28 @@ def _captured_text(messages: list[Any]) -> str:
     return "\n".join(text_parts)
 
 
+class UnavailableKnowledgeBase(FakeKnowledgeBase):
+    async def retrieve(
+        self,
+        query: str,
+        kb_names: list[str],
+        top_k: int = 5,
+    ) -> list[RetrievedChunk]:
+        self.calls.append((query, kb_names, top_k))
+        raise KnowledgeBaseUnavailable("knowledge base unavailable")
+
+
+class UnexpectedFailureKnowledgeBase(FakeKnowledgeBase):
+    async def retrieve(
+        self,
+        query: str,
+        kb_names: list[str],
+        top_k: int = 5,
+    ) -> list[RetrievedChunk]:
+        self.calls.append((query, kb_names, top_k))
+        raise RuntimeError("unexpected retrieval failure")
+
+
 class TestInteractionAgent:
     async def test_turn_uses_rag_and_returns_model_output(self) -> None:
         subject_id = uuid4()
@@ -97,3 +121,66 @@ class TestInteractionAgent:
         assert "teach me derivatives" in prompt_text
         assert "A derivative measures instantaneous rate of change." in prompt_text
         assert "Learner previously completed calculus." in prompt_text
+
+    async def test_turn_degrades_to_no_context_when_kb_is_unavailable(
+        self,
+        caplog,
+    ) -> None:
+        subject_id = uuid4()
+
+        kb = UnavailableKnowledgeBase([])
+        memory = RecordingMemory()
+        model = TestModel(custom_output_text="I can still help without retrieved context.")
+
+        agent = InteractionAgent(
+            schema=_education_schema(),
+            kb=kb,
+            memory=memory,
+            model=model,
+        )
+
+        with capture_run_messages() as messages:
+            result = await agent.turn(
+                subject_id,
+                "teach me derivatives",
+            )
+
+        assert result == "I can still help without retrieved context."
+
+        assert kb.calls == [
+            (
+                "teach me derivatives",
+                ["primer-education-kb"],
+                5,
+            )
+        ]
+
+        assert memory.subject_ids == [subject_id]
+
+        prompt_text = _captured_text(messages)
+
+        assert "teach me derivatives" in prompt_text
+        assert "Retrieved knowledge:" in prompt_text
+        assert "Learner previously completed calculus." in prompt_text
+        assert "A derivative measures instantaneous rate of change." not in prompt_text
+
+        assert "Knowledge base unavailable" in caplog.text
+
+    async def test_turn_propagates_unexpected_kb_failures(self) -> None:
+        kb = UnexpectedFailureKnowledgeBase([])
+
+        agent = InteractionAgent(
+            schema=_education_schema(),
+            kb=kb,
+            memory=RecordingMemory(),
+            model=TestModel(),
+        )
+
+        with pytest.raises(
+            RuntimeError,
+            match="unexpected retrieval failure",
+        ):
+            await agent.turn(
+                uuid4(),
+                "teach me derivatives",
+            )
